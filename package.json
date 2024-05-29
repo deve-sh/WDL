@@ -1,0 +1,8 @@
+{
+	"name": "workflow-builder",
+	"private": true,
+	"scripts": {},
+	"devDependencies": {
+		"handlebars": "^4.7.8"
+	}
+}
