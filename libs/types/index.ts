@@ -3,6 +3,7 @@ import type { ManualInterventionWorkflowStep } from "./ManualInterventionWorkflo
 import type { ServerSideWorkflowStep } from "./ServerSideWorkflowStep";
 import type { WebhookWorkflowStep } from "./WebhookWorkflowStep";
 
+import type { WorkflowStepResolver } from "./Resolver";
 import type { WorkflowCurrentState } from "./WorkflowCurrentState";
 
 export type WorkflowStepParticipants =
@@ -27,4 +28,11 @@ export type WorkflowDefinitionSchema = {
 	steps: WorkflowStep[];
 };
 
-export { WorkflowCurrentState };
+export type WorkflowInitOptions = {
+	participant: WorkflowStepParticipants;
+	resolvers?: {
+		[stepId: string]: WorkflowStepResolver;
+	};
+};
+
+export { WorkflowCurrentState, WorkflowStepResolver };
