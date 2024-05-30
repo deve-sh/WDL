@@ -5,6 +5,7 @@ import type {
 } from "../types";
 import type { ClientSideWorkflowStep } from "../types/ClientSideWorkflowStep";
 
+import parseAndResolveTemplateString from "./helpers/parseAndResolveTemplateString";
 import processConditional from "./helpers/processConditional";
 import request from "./helpers/request";
 
@@ -28,12 +29,12 @@ class Workflow {
 				"Invalid Workflow initialization: Steps or ID of the Workflow not defined"
 			);
 
-		if (!options || !options.participant)
+		if (!options || !options.idealParticipant)
 			throw new Error("Invalid Workflow initialization: Options not provided");
 
 		this.template = workflowTemplate;
 		this.options = {
-			participant: options.participant,
+			idealParticipant: options.idealParticipant,
 			resolvers: options.resolvers || {},
 			environmentContext: options.environmentContext || {},
 		};
@@ -179,8 +180,7 @@ class Workflow {
 		for (let validation of validations) {
 			const outputOfEvaluation = processConditional(
 				validation.condition,
-				currentStateMetadata,
-				this.options.environmentContext
+				this.generateVariablesForInterpolation()
 			);
 			if (!outputOfEvaluation) {
 				passedAllValidations = false;
@@ -205,68 +205,71 @@ class Workflow {
 	async processCurrentStep() {
 		this.throwIfCurrentStateNotLoaded();
 
-		const currentState = this.getCurrentState() as WorkflowCurrentState;
-
 		const step = this.template.steps.find(
 			(step) => step.id === this.currentState?.currentStep
 		);
 
 		if (!step) throw new Error("Step not found");
 
-		if (step.participant === "server") {
-			if (step.action.type === "request") {
-				const { failed, errorMessage, response } = await request(
-					step.action,
-					currentState.metadata,
-					this.options.environmentContext
-				);
-
-				const targetStep = failed
-					? step.action.onError && step.action.onError.targetStep
-					: step.action.onSuccess && step.action.onSuccess.targetStep;
-
-				if (targetStep) {
-					return this.goToStep(targetStep, {
-						errorMessage,
-						failed,
-						response,
-					});
-				}
-				
-				return;
-			}
-
-			if (step.action.type === "resolver") {
-				if (!this.options.resolvers[step.id])
-					throw new Error(
-						"Workflow: Resolver for server-side step" +
-							step.id +
-							"is not defined"
-					);
-
-				return this.options.resolvers[step.id](
-					this,
-					this.options.environmentContext
-				);
-			}
-		}
-
-		if (step.participant === "webhook") {
-			// Webhooks always need a resolver
-			if (!this.options.resolvers[step.id])
-				throw new Error(
-					"Workflow: Resolver for webhook step" + step.id + "is not defined"
-				);
-
+		// Resolvers for a step take precedence over everything and do not care about the native behaviour of steps
+		// which don't have
+		if (this.options.resolvers[step.id]) {
+			// Post a redirect, some data is coming back
+			// That data has to be processed
 			return this.options.resolvers[step.id](
 				this,
 				this.options.environmentContext
 			);
 		}
 
+		if (step.idealParticipant === "server" && step.action.type === "request") {
+			const { failed, errorMessage, response } = await request(
+				step.action,
+				this.generateVariablesForInterpolation()
+			);
+
+			const targetStep = failed
+				? step.action.onError && step.action.onError.targetStep
+				: step.action.onSuccess && step.action.onSuccess.targetStep;
+
+			if (targetStep) {
+				return this.goToStep(targetStep, {
+					errorMessage,
+					failed,
+					response,
+				});
+			}
+
+			return;
+		}
+
+		if (
+			step.idealParticipant === "client-redirector" &&
+			step.type === "redirect"
+		) {
+			if (typeof window !== "undefined") {
+				// If this is being run on the client side, redirect the window
+				// For server-side actions just use a resolver.
+				window.location.href = parseAndResolveTemplateString(
+					step.url,
+					this.generateVariablesForInterpolation()
+				);
+			}
+		}
+
 		throw new Error(
-			"Workflow: Step does not have a valid action, resolver or participant"
+			"Workflow: Step" + step.id + "does not have a valid action or resolver"
 		);
+	}
+
+	// #Utils
+	private generateVariablesForInterpolation() {
+		const currentState = this.getCurrentState() as WorkflowCurrentState;
+
+		return {
+			steps: currentState.metadata,
+			env: this.options.environmentContext,
+		};
 	}
 }
 

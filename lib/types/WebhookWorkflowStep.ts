@@ -1,5 +1,5 @@
 export type WebhookWorkflowStep = {
-	participant: "webhook";
+	idealParticipant: "webhook-handler";
     /*
         A resolver is needed to handle data coming in from the webhook:
 

@@ -33,6 +33,6 @@ export type ServerSideResolver = {
 };
 
 export type ServerSideWorkflowStep = {
-	participant: "server";
+	idealParticipant: "server";
 	action: ServerSideRequest | ServerSideResolver;
 };

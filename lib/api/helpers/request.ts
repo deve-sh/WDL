@@ -1,12 +1,10 @@
-import { WorkflowCurrentState, WorkflowInitOptions } from "../../types";
 import { RequestArgs } from "../../types/ServerSideWorkflowStep";
 
 import parseAndResolveTemplateString from "./parseAndResolveTemplateString";
 
 export default async function request(
 	args: RequestArgs,
-	metadata: WorkflowCurrentState["metadata"],
-	env: WorkflowInitOptions["environmentContext"]
+	variables: Record<string, any>
 ) {
 	let failed = false;
 	let errorMessage = "";
@@ -16,13 +14,13 @@ export default async function request(
 		const headers = JSON.parse(
 			parseAndResolveTemplateString(
 				JSON.stringify({ "content-type": "application/json", ...args.headers }),
-				{ steps: metadata, env }
+				variables
 			)
 		);
-		const body = parseAndResolveTemplateString(JSON.stringify(args.body), {
-			steps: metadata,
-			env,
-		});
+		const body = parseAndResolveTemplateString(
+			JSON.stringify(args.body),
+			variables
+		);
 
 		let fetcher: typeof import("node-fetch")["default"] | Window["fetch"];
 
