@@ -265,7 +265,7 @@ class Workflow {
 		}
 
 		throw new Error(
-			"Workflow: Step does not have a valid action, resolver or particpant"
+			"Workflow: Step does not have a valid action, resolver or participant"
 		);
 	}
 }
