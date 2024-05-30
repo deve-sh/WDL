@@ -1,11 +1,7 @@
-import {
-	WorkflowCurrentState,
-	WorkflowDefinitionSchema,
-	WorkflowInitOptions,
-} from ".";
+import type Workflow from "libs/api/Workflow";
+import type { WorkflowInitOptions } from ".";
 
 export type WorkflowStepResolver = (
-	template: WorkflowDefinitionSchema,
-	currentState: WorkflowCurrentState,
+	workflow: Workflow,
 	env: WorkflowInitOptions["environmentContext"]
 ) => Promise<any>;

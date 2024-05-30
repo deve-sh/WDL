@@ -226,7 +226,7 @@ class Workflow {
 					: step.action.onSuccess && step.action.onSuccess.targetStep;
 
 				if (targetStep) {
-					this.goToStep(targetStep, {
+					return this.goToStep(targetStep, {
 						errorMessage,
 						failed,
 						response,
@@ -243,8 +243,7 @@ class Workflow {
 					);
 
 				return this.options.resolvers[step.id](
-					this.template,
-					currentState,
+					this,
 					this.options.environmentContext
 				);
 			}
@@ -258,8 +257,7 @@ class Workflow {
 				);
 
 			return this.options.resolvers[step.id](
-				this.template,
-				currentState,
+				this,
 				this.options.environmentContext
 			);
 		}
