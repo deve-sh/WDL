@@ -3,7 +3,8 @@ import type {
 	WorkflowDefinitionSchema,
 	WorkflowInitOptions,
 } from "../types";
-import type { ClientSideWorkflowStepActions } from "../types/ClientSideWorkflowStep";
+import type { ClientSideWorkflowStep } from "../types/ClientSideWorkflowStep";
+import parseAndResolveTemplateString from "./parsers/parseAndResolveTemplateString";
 
 class Workflow {
 	template: WorkflowDefinitionSchema;
@@ -29,7 +30,7 @@ class Workflow {
 			throw new Error("Invalid Workflow initialization: Options not provided");
 
 		this.template = workflowTemplate;
-		this.options = { resolvers: {}, ...options };
+		this.options = { resolvers: {}, environmentContext: {}, ...options };
 	}
 
 	loadCurrentState(currentState?: WorkflowCurrentState) {
@@ -151,13 +152,50 @@ class Workflow {
 	async validateStepAction(
 		stepId: string,
 		actionId: string, // The id of the button/action that's been clicked
-		inputs: ClientSideWorkflowStepActions // The inputs corresponding to the step that have been provided.
+		inputs: Record<string, any> // The inputs corresponding to the step that have been provided.
 	) {
 		this.throwIfCurrentStateNotLoaded();
 
-		const step = this.template.steps.find((step) => step.id === stepId);
+		const currentState = this.currentState;
 
-		if (!step) return;
+		if (!currentState) return;
+
+		const step = this.template.steps.find(
+			(step) => step.id === stepId
+		) as ClientSideWorkflowStep;
+
+		if (!step) throw new Error("Step not found");
+
+		if (!step.actions) throw new Error("Step does not have actions");
+
+		const action = step.actions.find((action) => action.id === actionId);
+
+		if (!action) throw new Error("Step action not found");
+
+		const validations = action.validations || [];
+
+		let passedAllValidations = true;
+
+		for (let validation of validations) {
+			// Create an if-else condition
+
+			// TODO: Probably sanitize JS code? This is equivalent of an "eval" statement
+			const conditionExpressionToEvaluate = `
+				const env = ${JSON.stringify(this.options.environmentContext)};
+				const steps = ${JSON.stringify({
+					...currentState.metadata,
+					[stepId]: { inputs },
+				})};
+				return (${validation.condition});
+			`;
+
+			const evaluationFunction = new Function(conditionExpressionToEvaluate);
+			const outputOfEvaluation = evaluationFunction();
+
+			if (!outputOfEvaluation) passedAllValidations = false;
+		}
+
+		return passedAllValidations;
 	}
 
 	/**

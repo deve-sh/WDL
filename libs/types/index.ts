@@ -30,6 +30,9 @@ export type WorkflowDefinitionSchema = {
 
 export type WorkflowInitOptions = {
 	participant: WorkflowStepParticipants;
+	environmentContext?: {
+		[key: string]: string;
+	};
 	resolvers?: {
 		[stepId: string]: WorkflowStepResolver;
 	};

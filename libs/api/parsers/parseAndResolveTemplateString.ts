@@ -13,13 +13,11 @@ export const getVariables = (
 
 const parseAndResolveTemplateString = (
 	strToResolve: string,
-	environmentContext: Record<string, any>
+	variables: Record<string, any>
 ) => {
 	const stringTemplateResolver = Handlebars.compile(strToResolve);
-	return stringTemplateResolver({
-        // TODO: Fill in environment context and current state for
-        // resolving strings with variables or js expressions
-    });
+	// resolving strings with variables or js expressions
+	return stringTemplateResolver(variables);
 };
 
 export default parseAndResolveTemplateString;
