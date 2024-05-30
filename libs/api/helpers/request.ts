@@ -16,7 +16,7 @@ export default async function request(
 		const headers = JSON.parse(
 			parseAndResolveTemplateString(
 				JSON.stringify({ "content-type": "application/json", ...args.headers }),
-				{ ...metadata, env }
+				{ steps: metadata, env }
 			)
 		);
 		const body = parseAndResolveTemplateString(JSON.stringify(args.body), {
@@ -37,9 +37,9 @@ export default async function request(
 		});
 		if (!response.ok) failed = true;
 		response = await response.json();
-	} catch (error) {
+	} catch (error: Error | unknown) {
 		failed = true;
-		errorMessage = error.message;
+		errorMessage = (error as Error).message;
 	}
 
 	return { failed, errorMessage, response };

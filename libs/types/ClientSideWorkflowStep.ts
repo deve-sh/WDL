@@ -12,8 +12,9 @@ export type ClientSideWorkflowStepActions = {
 		primary: boolean;
 		type?: "submit";
 		label: string;
-		onSuccess: { targetStep: string };
 	};
+	onSuccess: { targetStep: string };
+	onError?: { targetStep: string };
 	validations: { condition: string; errorMessage: string }[];
 };
 

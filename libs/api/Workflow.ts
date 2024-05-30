@@ -82,32 +82,27 @@ class Workflow {
 	) {
 		this.throwIfCurrentStateNotLoaded();
 
-		if (this.currentState) this.currentState.metadata[stepId] = metadata;
+		if (!this.currentState) return;
+
+		this.currentState.metadata[stepId] = {
+			...this.currentState.metadata[stepId],
+			...metadata,
+		};
 	}
 
 	goToStep(
 		stepId: string,
-		metadata?: WorkflowCurrentState["metadata"][string]
+		prevStepMetadata?: WorkflowCurrentState["metadata"][string]
 	) {
 		this.throwIfCurrentStateNotLoaded();
 
-		const currentState = this.currentState;
-
-		if (!currentState) return false;
-
-		const updatedCurrentState = {
-			...currentState,
-			currentStep: stepId,
-		};
-
-		if (metadata) {
-			updatedCurrentState.metadata[stepId] = {
-				...updatedCurrentState.metadata[stepId],
-				...metadata,
-			};
+		if (prevStepMetadata) {
+			const currentStep = this.getCurrentState()?.currentStep as string;
+			this.setStepMetadata(currentStep, prevStepMetadata);
 		}
 
-		this.loadCurrentState(updatedCurrentState);
+		const currentState = this.getCurrentState() as WorkflowCurrentState;
+		this.loadCurrentState({ ...currentState, currentStep: stepId });
 	}
 
 	goAhead(metadata?: WorkflowCurrentState["metadata"][string]) {
@@ -179,16 +174,28 @@ class Workflow {
 		};
 
 		let passedAllValidations = true;
+		let validationErrors: string[] = [];
+
 		for (let validation of validations) {
 			const outputOfEvaluation = processConditional(
 				validation.condition,
 				currentStateMetadata,
 				this.options.environmentContext
 			);
-			if (!outputOfEvaluation) passedAllValidations = false;
+			if (!outputOfEvaluation) {
+				passedAllValidations = false;
+				validationErrors.push(validation.errorMessage);
+			}
 		}
 
-		return passedAllValidations;
+		// Process onSuccess of this step
+		if (passedAllValidations && action.onSuccess && action.onSuccess.targetStep)
+			this.goToStep(action.onSuccess.targetStep, { inputs });
+
+		if (!passedAllValidations && action.onError && action.onError.targetStep)
+			this.goToStep(action.onError.targetStep, { inputs });
+
+		return { isValid: passedAllValidations, validationErrors };
 	}
 
 	/**
