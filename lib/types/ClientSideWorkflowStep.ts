@@ -1,7 +1,11 @@
 export type ClientSideWorkflowStepInputs = {
 	type: "tel" | "text" | "number" | "file";
 	required?: boolean;
-	text: string;
+	attributes: {
+		label: string;
+		placeholder?: string;
+		defaultValue?: string;
+	};
 	id: string;
 };
 

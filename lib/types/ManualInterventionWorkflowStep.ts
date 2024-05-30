@@ -1,7 +1,11 @@
 export type ManualInterventionWorkflowStepInputs = {
-	type: "tel" | "text" | "number";
+	type: "tel" | "text" | "number" | "file";
 	required?: boolean;
-	text: string;
+	attributes: {
+		label: string;
+		placeholder?: string;
+		defaultValue?: string;
+	};
 	id: string;
 };
 
@@ -11,8 +15,9 @@ export type ManualInterventionWorkflowStepActions = {
 		primary: boolean;
 		type?: "submit";
 		label: string;
-		onSuccess: { targetStep: string };
 	};
+	onSuccess: { targetStep: string };
+	onError?: { targetStep: string };
 	validations: { condition: string; errorMessage: string }[];
 };
 
