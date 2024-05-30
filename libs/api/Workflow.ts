@@ -232,6 +232,8 @@ class Workflow {
 						response,
 					});
 				}
+				
+				return;
 			}
 
 			if (step.action.type === "resolver") {
