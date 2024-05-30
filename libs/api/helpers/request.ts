@@ -24,7 +24,13 @@ export default async function request(
 			env,
 		});
 
-		response = await fetch(args.endpoint, {
+		let fetcher: typeof import("node-fetch")["default"] | Window["fetch"];
+
+		if (typeof window === "undefined")
+			fetcher = (await import("node-fetch")).default;
+		else fetcher = window.fetch;
+
+		response = await fetcher(args.endpoint, {
 			method: args.method || "get",
 			headers: headers,
 			body: body,
