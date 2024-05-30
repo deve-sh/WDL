@@ -1,8 +1,12 @@
-export type ServerSideRequest = {
+export type RequestArgs = {
 	endpoint: string;
-	method: string;
-	headers?: Record<string, string | number>;
+	method?: string;
+	headers?: HeadersInit;
 	body?: Record<string, any>;
+};
+
+export type ServerSideRequest = RequestArgs & {
+	type: "request";
 	onSuccess: { targetStep: string };
 	onError: { targetStep: string };
 };
