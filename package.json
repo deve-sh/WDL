@@ -1,9 +1,0 @@
-{
-	"name": "workflow-builder",
-	"private": true,
-	"scripts": {},
-	"devDependencies": {
-		"handlebars": "^4.7.8",
-		"node-fetch": "^3.3.2"
-	}
-}

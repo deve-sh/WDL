@@ -1,4 +1,4 @@
-import type Workflow from "lib/api/Workflow";
+import type Workflow from "../api/Workflow";
 import type { WorkflowInitOptions } from ".";
 
 export type WorkflowStepResolver = (
