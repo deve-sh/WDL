@@ -20,8 +20,7 @@ export type ServerSideResolver = {
 
         new Workflow(workflowDefinition, {
             resolvers: {
-                stepId: "...",
-                resolver: () => {
+                [stepId]: () => {
                     // Do something with workflow definition and workflow's current state
                 },
             },

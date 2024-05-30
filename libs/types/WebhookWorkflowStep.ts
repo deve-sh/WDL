@@ -5,8 +5,7 @@ export type WebhookWorkflowStep = {
 
         new Workflow(workflowDefinition, {
             resolvers: {
-                stepId: "...",
-                resolver: () => {
+                [stepId]: () => {
                     // Do something with workflow definition and workflow current state
                 },
             },

@@ -11,7 +11,7 @@ export type ManualInterventionWorkflowStepActions = {
 		primary: boolean;
 		type?: "submit";
 		label: string;
-		onClick: { targetStep: string };
+		onSuccess: { targetStep: string };
 	};
 	validations: { condition: string; errorMessage: string }[];
 };
