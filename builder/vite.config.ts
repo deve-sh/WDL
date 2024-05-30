@@ -6,10 +6,10 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
-			libs: path.resolve(__dirname, "../libs"),
+			lib: path.resolve(__dirname, "../lib"),
 		},
 	},
 	optimizeDeps: {
-		include: ["libs"],
+		include: ["lib"],
 	},
 });
