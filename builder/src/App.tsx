@@ -1,11 +1,14 @@
-import { useEffect } from "react";
-import initWorkflow from "./workflows";
+import { ChakraBaseProvider } from "@chakra-ui/react";
+
+import BuilderFeature from "./features/Builder";
 
 function App() {
-	useEffect(() => {
-		initWorkflow()
-	}, [])
-	return <></>;
+	return (
+		<ChakraBaseProvider>
+			<header id="header" />
+			<BuilderFeature />
+		</ChakraBaseProvider>
+	);
 }
 
 export default App;

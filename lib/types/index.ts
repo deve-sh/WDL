@@ -14,7 +14,8 @@ export type WorkflowStepParticipants =
 
 export type WorkflowStep = {
 	id: string;
-	heading: string;
+	name: string;
+	heading?: string;
 	description?: string;
 	additionalData?: Record<string, any>;
 } & (
