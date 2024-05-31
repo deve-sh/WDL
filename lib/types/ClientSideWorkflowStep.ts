@@ -1,7 +1,7 @@
 export type ClientSideWorkflowStepInputs = {
-	type: "tel" | "text" | "number" | "file";
 	required?: boolean;
 	attributes: {
+		type: string;
 		label: string;
 		placeholder?: string;
 		defaultValue?: string;
@@ -13,8 +13,8 @@ export type ClientSideWorkflowStepActions = {
 	id: string;
 	type?: string;
 	attributes?: {
-		primary: boolean;
-		type?: "submit";
+		primary?: boolean;
+		type?: string;
 		label: string;
 	};
 	validations?: { condition: string; errorMessage: string }[];

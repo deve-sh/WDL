@@ -13,13 +13,14 @@ import request from "./helpers/request";
 class Workflow {
 	template: WorkflowDefinitionSchema;
 	currentState?: WorkflowCurrentState;
-	options: Partial<WorkflowInitOptions>;
+	options: WorkflowInitOptions;
 
 	constructor(
 		workflowTemplate: WorkflowDefinitionSchema,
-		options: Partial<WorkflowInitOptions>
+		options?: Partial<WorkflowInitOptions>
 	) {
-		if (!workflowTemplate) throw new Error("Workflow: Invalid Workflow initialization");
+		if (!workflowTemplate)
+			throw new Error("Workflow: Invalid Workflow initialization");
 
 		if (
 			!workflowTemplate.id ||
@@ -30,13 +31,10 @@ class Workflow {
 				"Workflow: Invalid Workflow initialization: Steps or ID of the Workflow not defined"
 			);
 
-		if (!options)
-			throw new Error("Workflow: Invalid Workflow initialization: Options not provided");
-
 		this.template = workflowTemplate;
 		this.options = {
-			resolvers: options.resolvers || {},
-			environmentContext: options.environmentContext || {},
+			resolvers: options ? options.resolvers || {} : {},
+			environmentContext: options ? options.environmentContext || {} : {},
 		};
 	}
 

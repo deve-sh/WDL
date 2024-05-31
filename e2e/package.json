@@ -2,6 +2,7 @@
 	"name": "e2e",
 	"version": "1.0.0",
 	"scripts": {
+		"test": "npm run test:unit-and-integration",
 		"test:unit-and-integration": "jest ./unit-and-integration-tests"
 	},
 	"devDependencies": {
