@@ -11,15 +11,15 @@ export type ClientSideWorkflowStepInputs = {
 
 export type ClientSideWorkflowStepActions = {
 	id: string;
-	type: "button";
-	attributes: {
+	type?: string;
+	attributes?: {
 		primary: boolean;
 		type?: "submit";
 		label: string;
 	};
-	onSuccess: { targetStep: string };
-	onError?: { targetStep: string };
-	validations: { condition: string; errorMessage: string }[];
+	validations?: { condition: string; errorMessage: string }[];
+	onValidationSuccess: { targetStep: string };
+	onValidationError?: { targetStep: string };
 };
 
 export type ClientSideWorkflowStep = {

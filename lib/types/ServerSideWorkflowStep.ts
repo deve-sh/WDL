@@ -16,7 +16,7 @@ export type ServerSideResolver = {
 	/*
         If there are no requests defined
         Then this step has to be manually plugged into
-        and a resolver has to be specified by the server.
+        and a resolver has to be specified by the consumer.
 
         new Workflow(workflowDefinition, {
             resolvers: {
@@ -29,6 +29,8 @@ export type ServerSideResolver = {
         (or)
 
         workflowBuilder.registerResolver(stepId, () => { ... })
+
+        The resolver is passed a the workflow class where it is responsible for movine the state of the workflow.
     */
 };
 

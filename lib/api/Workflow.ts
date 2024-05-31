@@ -19,7 +19,7 @@ class Workflow {
 		workflowTemplate: WorkflowDefinitionSchema,
 		options: Partial<WorkflowInitOptions>
 	) {
-		if (!workflowTemplate) throw new Error("Invalid Workflow initialization");
+		if (!workflowTemplate) throw new Error("Workflow: Invalid Workflow initialization");
 
 		if (
 			!workflowTemplate.id ||
@@ -27,11 +27,11 @@ class Workflow {
 			!workflowTemplate.steps.length
 		)
 			throw new Error(
-				"Invalid Workflow initialization: Steps or ID of the Workflow not defined"
+				"Workflow: Invalid Workflow initialization: Steps or ID of the Workflow not defined"
 			);
 
 		if (!options)
-			throw new Error("Invalid Workflow initialization: Options not provided");
+			throw new Error("Workflow: Invalid Workflow initialization: Options not provided");
 
 		this.template = workflowTemplate;
 		this.options = {
@@ -50,7 +50,7 @@ class Workflow {
 	throwIfCurrentStateNotLoaded() {
 		if (!this.currentState)
 			throw new Error(
-				"Current State of Workflow not loaded via workflow.loadCurrentState"
+				"Workflow: Current State of Workflow not loaded via workflow.loadCurrentState"
 			);
 	}
 
@@ -163,7 +163,7 @@ class Workflow {
 	 */
 	async validateStepAction(
 		stepId: string,
-		actionId: string, // The id of the button/action that's been clicked
+		actionId: string, // The id of the action that's been clicked
 		inputs: Record<string, any> // The inputs corresponding to the step that have been provided.
 	) {
 		this.throwIfCurrentStateNotLoaded();
@@ -171,18 +171,17 @@ class Workflow {
 		const step = this.template.steps.find(
 			(step) => step.id === stepId
 		) as ClientSideWorkflowStep;
-		if (!step) throw new Error("Step not found");
-		if (!step.actions) throw new Error("Step does not have actions");
+		if (!step) throw new Error("Workflow: Step not found");
+		if (step.type !== "interactive-step")
+			throw new Error(
+				"Workflow: Only Interactive Step Types can be validated. For all other steps, use a resolver"
+			);
+		if (!step.actions) throw new Error("Workflow: Step does not have actions");
 
 		const action = step.actions.find((action) => action.id === actionId);
-		if (!action) throw new Error("Step action not found");
+		if (!action) throw new Error("Workflow: Step action not found");
 
 		const validations = action.validations || [];
-
-		const currentStateMetadata = {
-			...(this.getCurrentState() as WorkflowCurrentState).metadata,
-			[stepId]: { inputs },
-		};
 
 		let passedAllValidations = true;
 		let validationErrors: string[] = [];
@@ -198,12 +197,20 @@ class Workflow {
 			}
 		}
 
-		// Process onSuccess of this step
-		if (passedAllValidations && action.onSuccess && action.onSuccess.targetStep)
-			this.goToStep(action.onSuccess.targetStep, { inputs });
+		// Process onValidationSuccess of this step
+		if (
+			passedAllValidations &&
+			action.onValidationSuccess &&
+			action.onValidationSuccess.targetStep
+		)
+			this.goToStep(action.onValidationSuccess.targetStep, { inputs });
 
-		if (!passedAllValidations && action.onError && action.onError.targetStep)
-			this.goToStep(action.onError.targetStep, { inputs });
+		if (
+			!passedAllValidations &&
+			action.onValidationError &&
+			action.onValidationError.targetStep
+		)
+			this.goToStep(action.onValidationError.targetStep, { inputs });
 
 		return { isValid: passedAllValidations, validationErrors };
 	}
@@ -219,7 +226,7 @@ class Workflow {
 			(step) => step.id === this.currentState?.currentStep
 		);
 
-		if (!step) throw new Error("Step not found");
+		if (!step) throw new Error("Workflow: Step not found");
 
 		// Resolvers for a step take precedence over everything
 		// and do not care about the native behaviour of steps
