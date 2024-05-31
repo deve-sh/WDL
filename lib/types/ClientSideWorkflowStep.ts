@@ -23,7 +23,7 @@ export type ClientSideWorkflowStepActions = {
 };
 
 export type ClientSideWorkflowStep = {
-	idealParticipant: "interactive-client";
+	type: "interactive-step";
 	inputs: ClientSideWorkflowStepInputs[];
 	actions: ClientSideWorkflowStepActions[];
 };

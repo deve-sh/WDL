@@ -2,6 +2,7 @@ import type {
 	WorkflowCurrentState,
 	WorkflowDefinitionSchema,
 	WorkflowInitOptions,
+	WorkflowStepResolver,
 } from "../types";
 import type { ClientSideWorkflowStep } from "../types/ClientSideWorkflowStep";
 
@@ -12,7 +13,7 @@ import request from "./helpers/request";
 class Workflow {
 	template: WorkflowDefinitionSchema;
 	currentState?: WorkflowCurrentState;
-	options: WorkflowInitOptions;
+	options: Partial<WorkflowInitOptions>;
 
 	constructor(
 		workflowTemplate: WorkflowDefinitionSchema,
@@ -29,12 +30,11 @@ class Workflow {
 				"Invalid Workflow initialization: Steps or ID of the Workflow not defined"
 			);
 
-		if (!options || !options.idealParticipant)
+		if (!options)
 			throw new Error("Invalid Workflow initialization: Options not provided");
 
 		this.template = workflowTemplate;
 		this.options = {
-			idealParticipant: options.idealParticipant,
 			resolvers: options.resolvers || {},
 			environmentContext: options.environmentContext || {},
 		};
@@ -148,6 +148,16 @@ class Workflow {
 		this.goToStep(nextStepId, metadata);
 	}
 
+	getRegisteredResolverForStep(stepId: string) {
+		if (this.options.resolvers && this.options.resolvers[stepId])
+			return this.options.resolvers[stepId];
+	}
+
+	registerResolver(stepId: string, resolver: WorkflowStepResolver) {
+		if (!this.options.resolvers) this.options.resolvers = {};
+		return (this.options.resolvers[stepId] = resolver);
+	}
+
 	/**
 	 * Client side workflow step validator on proceeding with any action
 	 */
@@ -211,18 +221,18 @@ class Workflow {
 
 		if (!step) throw new Error("Step not found");
 
-		// Resolvers for a step take precedence over everything and do not care about the native behaviour of steps
-		// which don't have
-		if (this.options.resolvers[step.id]) {
-			// Post a redirect, some data is coming back
-			// That data has to be processed
-			return this.options.resolvers[step.id](
-				this,
-				this.options.environmentContext
-			);
-		}
+		// Resolvers for a step take precedence over everything
+		// and do not care about the native behaviour of steps
+		const resolverFunc = this.getRegisteredResolverForStep(step.id);
+		if (resolverFunc)
+			return resolverFunc(this, this.options.environmentContext || {});
 
-		if (step.idealParticipant === "server" && step.action.type === "request") {
+		// Handling
+		if (
+			step.type === "request-or-resolver" &&
+			step.action &&
+			step.action.type === "request"
+		) {
 			const { failed, errorMessage, response } = await request(
 				step.action,
 				this.generateVariablesForInterpolation()
@@ -243,10 +253,7 @@ class Workflow {
 			return;
 		}
 
-		if (
-			step.idealParticipant === "client-redirector" &&
-			step.type === "redirect"
-		) {
+		if (step.type === "redirect") {
 			if (typeof window !== "undefined") {
 				// If this is being run on the client side, redirect the window
 				// For server-side actions just use a resolver.

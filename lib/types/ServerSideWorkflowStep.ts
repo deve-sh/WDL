@@ -28,11 +28,11 @@ export type ServerSideResolver = {
 
         (or)
 
-        workflowBuilder.defineResolver(stepId, () => { ... })
+        workflowBuilder.registerResolver(stepId, () => { ... })
     */
 };
 
 export type ServerSideWorkflowStep = {
-	idealParticipant: "server";
-	action: ServerSideRequest | ServerSideResolver;
+	type: "request-or-resolver";
+	action: ServerSideRequest | null;
 };

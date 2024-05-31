@@ -1,6 +1,5 @@
 import type { ClientSideWorkflowStep } from "./ClientSideWorkflowStep";
 import type { ServerSideWorkflowStep } from "./ServerSideWorkflowStep";
-import type { WebhookWorkflowStep } from "./WebhookWorkflowStep";
 
 import type { WorkflowStepResolver } from "./Resolver";
 import type { WorkflowCurrentState } from "./WorkflowCurrentState";
@@ -9,8 +8,7 @@ import { RedirectionWorkflowStep } from "./RedirectWorkflowStep";
 export type WorkflowStepParticipants =
 	| "interactive-client"
 	| "client-redirector"
-	| "server"
-	| "webhook-handler";
+	| "server";
 
 export type WorkflowStep = {
 	id: string;
@@ -18,12 +16,7 @@ export type WorkflowStep = {
 	heading?: string;
 	description?: string;
 	additionalData?: Record<string, any>;
-} & (
-	| ClientSideWorkflowStep
-	| ServerSideWorkflowStep
-	| WebhookWorkflowStep
-	| RedirectionWorkflowStep
-);
+} & (ClientSideWorkflowStep | ServerSideWorkflowStep | RedirectionWorkflowStep);
 
 export type WorkflowDefinitionSchema = {
 	id: string;
@@ -31,7 +24,6 @@ export type WorkflowDefinitionSchema = {
 };
 
 export type WorkflowInitOptions = {
-	idealParticipant: WorkflowStepParticipants;
 	environmentContext: {
 		[key: string]: string;
 	};
