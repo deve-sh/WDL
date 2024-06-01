@@ -2,9 +2,10 @@ import type {
 	WorkflowCurrentState,
 	WorkflowDefinitionSchema,
 	WorkflowInitOptions,
+	WorkflowStep,
 	WorkflowStepResolver,
 } from "../types";
-import type { ClientSideWorkflowStep } from "../types/ClientSideWorkflowStep";
+import type { InteractiveWorkflowStep } from "../types/InteractiveWorkflowStep";
 
 import parseAndResolveTemplateString from "./helpers/parseAndResolveTemplateString";
 import processConditional from "./helpers/processConditional";
@@ -43,6 +44,8 @@ class Workflow {
 			currentStep: this.template.steps[0].id,
 			metadata: { general: {} },
 		};
+
+		return this;
 	}
 
 	throwIfCurrentStateNotLoaded() {
@@ -102,6 +105,8 @@ class Workflow {
 
 		const currentState = this.getCurrentState() as WorkflowCurrentState;
 		this.loadCurrentState({ ...currentState, currentStep: stepId });
+
+		return true;
 	}
 
 	goAhead(metadata?: WorkflowCurrentState["metadata"][string]) {
@@ -122,7 +127,7 @@ class Workflow {
 
 		const nextStepId = this.template.steps[currentStepIndex + 1].id;
 
-		this.goToStep(nextStepId, metadata);
+		return this.goToStep(nextStepId, metadata);
 	}
 
 	goBack(metadata?: WorkflowCurrentState["metadata"][string]) {
@@ -143,12 +148,13 @@ class Workflow {
 
 		const nextStepId = this.template.steps[currentStepIndex - 1].id;
 
-		this.goToStep(nextStepId, metadata);
+		return this.goToStep(nextStepId, metadata);
 	}
 
 	getRegisteredResolverForStep(stepId: string) {
 		if (this.options.resolvers && this.options.resolvers[stepId])
 			return this.options.resolvers[stepId];
+		return null;
 	}
 
 	registerResolver(stepId: string, resolver: WorkflowStepResolver) {
@@ -168,7 +174,7 @@ class Workflow {
 
 		const step = this.template.steps.find(
 			(step) => step.id === stepId
-		) as ClientSideWorkflowStep;
+		) as InteractiveWorkflowStep;
 		if (!step) throw new Error("Workflow: Step not found");
 		if (step.type !== "interactive-step")
 			throw new Error(
@@ -185,10 +191,13 @@ class Workflow {
 		let validationErrors: string[] = [];
 
 		for (let validation of validations) {
-			const outputOfEvaluation = processConditional(
-				validation.condition,
-				this.generateVariablesForInterpolation()
-			);
+			const outputOfEvaluation = processConditional(validation.condition, {
+				...this.generateVariablesForInterpolation(),
+				steps: {
+					...this.generateVariablesForInterpolation(),
+					[(step as WorkflowStep).id]: { inputs },
+				},
+			});
 			if (!outputOfEvaluation) {
 				passedAllValidations = false;
 				validationErrors.push(validation.errorMessage);
@@ -262,15 +271,15 @@ class Workflow {
 			if (typeof window !== "undefined") {
 				// If this is being run on the client side, redirect the window
 				// For server-side actions just use a resolver.
-				window.location.href = parseAndResolveTemplateString(
+				return (window.location.href = parseAndResolveTemplateString(
 					step.url,
 					this.generateVariablesForInterpolation()
-				);
+				));
 			}
 		}
 
 		throw new Error(
-			"Workflow: Step" + step.id + "does not have a valid action or resolver"
+			"Workflow: Step " + step.id + " does not have a valid action or resolver"
 		);
 	}
 

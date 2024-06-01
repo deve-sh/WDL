@@ -5,13 +5,13 @@ export type RequestArgs = {
 	body?: Record<string, any>;
 };
 
-export type ServerSideRequest = RequestArgs & {
+export type RequestAction = RequestArgs & {
 	type: "request";
 	onSuccess: { targetStep: string };
 	onError: { targetStep: string };
 };
 
-export type ServerSideResolver = {
+export type ResolverAction = {
 	type: "resolver";
 	/*
         If there are no requests defined
@@ -34,7 +34,7 @@ export type ServerSideResolver = {
     */
 };
 
-export type ServerSideWorkflowStep = {
+export type RequestOrResolverWorkflowStep = {
 	type: "request-or-resolver";
-	action: ServerSideRequest | null;
+	action: RequestAction | ResolverAction;
 };

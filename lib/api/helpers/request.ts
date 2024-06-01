@@ -1,4 +1,4 @@
-import { RequestArgs } from "../../types/ServerSideWorkflowStep";
+import { RequestArgs } from "../../types/RequestOrResolverWorkflowStep";
 
 import parseAndResolveTemplateString from "./parseAndResolveTemplateString";
 

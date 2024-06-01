@@ -1,5 +1,5 @@
-import type { ClientSideWorkflowStep } from "./ClientSideWorkflowStep";
-import type { ServerSideWorkflowStep } from "./ServerSideWorkflowStep";
+import type { InteractiveWorkflowStep } from "./InteractiveWorkflowStep";
+import type { RequestOrResolverWorkflowStep } from "./RequestOrResolverWorkflowStep";
 
 import type { WorkflowStepResolver } from "./Resolver";
 import type { WorkflowCurrentState } from "./WorkflowCurrentState";
@@ -16,7 +16,7 @@ export type WorkflowStep = {
 	heading?: string;
 	description?: string;
 	additionalData?: Record<string, any>;
-} & (ClientSideWorkflowStep | ServerSideWorkflowStep | RedirectionWorkflowStep);
+} & (InteractiveWorkflowStep | RequestOrResolverWorkflowStep | RedirectionWorkflowStep);
 
 export type WorkflowDefinitionSchema = {
 	id: string;

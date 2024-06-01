@@ -1,4 +1,4 @@
-export type ClientSideWorkflowStepInputs = {
+export type InteractiveWorkflowStepInputs = {
 	required?: boolean;
 	attributes: {
 		type: string;
@@ -9,7 +9,7 @@ export type ClientSideWorkflowStepInputs = {
 	id: string;
 };
 
-export type ClientSideWorkflowStepActions = {
+export type InteractiveWorkflowStepActions = {
 	id: string;
 	type?: string;
 	attributes?: {
@@ -22,8 +22,8 @@ export type ClientSideWorkflowStepActions = {
 	onValidationError?: { targetStep: string };
 };
 
-export type ClientSideWorkflowStep = {
+export type InteractiveWorkflowStep = {
 	type: "interactive-step";
-	inputs: ClientSideWorkflowStepInputs[];
-	actions: ClientSideWorkflowStepActions[];
+	inputs: InteractiveWorkflowStepInputs[];
+	actions: InteractiveWorkflowStepActions[];
 };
