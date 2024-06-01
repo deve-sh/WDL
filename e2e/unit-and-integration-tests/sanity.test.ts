@@ -55,7 +55,10 @@ describe("Sanity Basic tests for Library's exposed API", () => {
 		const workflow = new Workflow(workflowTemplate);
 
 		// Initially the currentState should be undefined
-		expect(workflow.currentState).not.toBeDefined();
+		expect(workflow.currentState).toMatchObject({
+			currentStep: "",
+			metadata: { general: {} },
+		});
 
 		expect(() => workflow.throwIfCurrentStateNotLoaded()).toThrowError(
 			"Workflow: Current State of Workflow not loaded via workflow.loadCurrentState"

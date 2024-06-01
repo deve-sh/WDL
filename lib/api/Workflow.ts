@@ -13,7 +13,11 @@ import request from "./helpers/request";
 
 class Workflow {
 	template: WorkflowDefinitionSchema;
-	currentState?: WorkflowCurrentState;
+	loadedCurrentState: boolean = false;
+	currentState: WorkflowCurrentState = {
+		currentStep: "",
+		metadata: { general: {} },
+	};
 	options: WorkflowInitOptions;
 
 	constructor(
@@ -40,6 +44,8 @@ class Workflow {
 	}
 
 	loadCurrentState(currentState?: WorkflowCurrentState) {
+		this.loadedCurrentState = true;
+
 		this.currentState = currentState || {
 			currentStep: this.template.steps[0].id,
 			metadata: { general: {} },
@@ -49,7 +55,7 @@ class Workflow {
 	}
 
 	throwIfCurrentStateNotLoaded() {
-		if (!this.currentState)
+		if (!this.currentState || !this.loadedCurrentState)
 			throw new Error(
 				"Workflow: Current State of Workflow not loaded via workflow.loadCurrentState"
 			);
