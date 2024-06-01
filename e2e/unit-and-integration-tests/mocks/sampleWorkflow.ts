@@ -30,7 +30,7 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 					validations: [
 						{
 							condition:
-								"!!steps.enterPhoneNumberStep.phoneNumber || steps.enterPhoneNumberStep.phoneNumber.length < 10",
+								"steps.enterPhoneNumberStep.inputs.phoneNumber && steps.enterPhoneNumberStep.inputs.phoneNumber.length >= 10",
 							// If-false
 							errorMessage: "Phone Number is not valid",
 						},
@@ -49,12 +49,33 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 				type: "request",
 				endpoint: "http://localhost:5000/sendOTPToPhoneNumber",
 				method: "post",
+				headers: {
+					authorization: '{{ env.otpApiKey }}'
+				},
 				body: {
 					phoneNumber: "{{ steps.enterPhoneNumberStep.inputs.phoneNumber }}",
 				},
 				onSuccess: { targetStep: "verifyOTPStep" },
 				onError: { targetStep: "enterPhoneNumberStep" },
 			},
+		},
+
+		{
+			type: "redirect",
+			id: "startOAuthStep",
+			name: "Start OAuth Step for KYC Process",
+			heading: "Redirecting you to KYC Portal",
+			description: "",
+			url: "{{steps.redirectURLComputer.finalURL}}?clientId={{env.variables.oAuthClientId}}",
+		},
+
+		{
+			type: "request-or-resolver",
+			id: "webhookStep",
+			name: "Receiving your data from the Webhook",
+			heading: "Receiving your data from the Webhook",
+			description: "",
+			action: { type: "resolver" },
 		},
 	],
 };
