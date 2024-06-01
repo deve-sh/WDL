@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 
-import Workflow from "../../lib/api/Workflow";
+import Workflow from "../../lib/api";
 import workflowTemplate from "./mocks/sampleWorkflow";
 
 import type { WorkflowCurrentState } from "../../lib/types";

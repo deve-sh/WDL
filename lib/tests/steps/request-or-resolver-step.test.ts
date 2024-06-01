@@ -1,12 +1,12 @@
 import { describe, expect, it } from "@jest/globals";
 
-import type { WorkflowCurrentState } from "../../../lib/types";
+import type { WorkflowCurrentState } from "../../types";
 import type {
 	RequestAction,
 	RequestOrResolverWorkflowStep,
-} from "../../../lib/types/RequestOrResolverWorkflowStep";
+} from "../../types/RequestOrResolverWorkflowStep";
 
-import Workflow from "../../../lib/api/Workflow";
+import Workflow from "../../api";
 import workflowTemplate from "../mocks/sampleWorkflow";
 
 describe("Tests for request/resolver steps", () => {
@@ -18,8 +18,10 @@ describe("Tests for request/resolver steps", () => {
 
 		try {
 			await workflow.processCurrentStep();
-		} catch (error) {
-			expect(error.message).toMatch("does not have a valid action or resolver");
+		} catch (error: unknown | Error) {
+			expect((error as Error).message).toMatch(
+				"does not have a valid action or resolver"
+			);
 		}
 	});
 
@@ -43,7 +45,7 @@ describe("Tests for request/resolver steps", () => {
 	});
 
 	it("should make a request for a step with request action defined + move the request according to the success of it", async () => {
-		let requestArgs;
+		let requestArgs: [url: string, options: Record<string, any>];
 
 		const mockRequestResponse = {
 			ok: true,
@@ -54,6 +56,7 @@ describe("Tests for request/resolver steps", () => {
 		global.window = {
 			// @ts-expect-error Filling in a window mock for the server environment without an additional library
 			fetch: async (...args) => {
+				// @ts-expect-error
 				requestArgs = args;
 
 				// Mock a success
@@ -82,17 +85,22 @@ describe("Tests for request/resolver steps", () => {
 
 		await workflow.processCurrentStep();
 
-		expect(requestArgs).toBeDefined();
+		// @ts-expect-error The variable is assigned a value on execution.
+		const argsReceivedInRequest = requestArgs as typeof requestArgs;
+
+		expect(argsReceivedInRequest).toBeDefined();
 
 		const action = requestStepInWorkflowTemplate.action as RequestAction;
 
 		// Validate URL of the request
-		expect(requestArgs[0]).toBe(action.endpoint);
+		expect(argsReceivedInRequest[0]).toBe(action.endpoint);
 
-		// Validate URL of the request
-		expect(requestArgs[1].method).toBe(action.method);
-		expect(requestArgs[1].headers.authorization).toBe("abcdef");
-		expect(JSON.parse(requestArgs[1].body).phoneNumber).toBe("1234567890");
+		// Validate Other bits of the request
+		expect(argsReceivedInRequest[1].method).toBe(action.method);
+		expect(argsReceivedInRequest[1].headers.authorization).toBe("abcdef");
+		expect(JSON.parse(argsReceivedInRequest[1].body).phoneNumber).toBe(
+			"1234567890"
+		);
 
 		// On Success handler should have been automatically called and the metadata should have been set correctly.
 		const currentState = workflow.getCurrentState() as WorkflowCurrentState;

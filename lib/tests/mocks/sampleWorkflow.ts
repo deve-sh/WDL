@@ -1,4 +1,4 @@
-import type { WorkflowDefinitionSchema } from "../../../lib/types/index";
+import type { WorkflowDefinitionSchema } from "../../types/index";
 
 const workflowTemplate: WorkflowDefinitionSchema = {
 	id: "sample-workflow",

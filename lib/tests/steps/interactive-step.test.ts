@@ -2,9 +2,9 @@ import { describe, expect, it } from "@jest/globals";
 
 import workflowTemplate from "../mocks/sampleWorkflow";
 
-import Workflow from "../../../lib/api/Workflow";
+import Workflow from "../../api";
 
-import type { InteractiveWorkflowStep } from "../../../lib/types/InteractiveWorkflowStep";
+import type { InteractiveWorkflowStep } from "../../types/InteractiveWorkflowStep";
 
 describe("Tests for Interactive Input Steps", () => {
 	it("should throw error on invalid action passed", async () => {
@@ -16,8 +16,10 @@ describe("Tests for Interactive Input Steps", () => {
 				"invalidActionButton",
 				{}
 			);
-		} catch (error) {
-			expect(error.message).toMatch("Workflow: Step action not found");
+		} catch (error: unknown | Error) {
+			expect((error as Error).message).toMatch(
+				"Workflow: Step action not found"
+			);
 		}
 	});
 

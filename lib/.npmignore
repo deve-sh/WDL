@@ -3,3 +3,6 @@ scripts
 tsconfig.json
 types
 dist
+tests
+coverage
+jest.config.js
