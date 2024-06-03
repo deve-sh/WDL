@@ -215,7 +215,7 @@ class Workflow {
 
 		if (validationErrors.length) {
 			newMetadata = {
-				...existingMetadata,
+				...newMetadata,
 				validationErrors: {
 					...existingMetadata?.validationErrors,
 					[actionId]: validationErrors,

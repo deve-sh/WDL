@@ -74,4 +74,27 @@ describe("Tests for Interactive Input Steps", () => {
 		expect(newState?.currentStep).toBe(stepToGoToOnSuccess);
 		expect(newStateStepMetadataForOtherStepsToUse).toMatchObject({ inputs });
 	});
+
+	it("should set step metadata on validation success and on validation error", async () => {
+		const workflow = new Workflow(workflowTemplate).loadCurrentState();
+
+		// Invalid inputs
+		const inputs = { phoneNumber: "" };
+
+		await workflow.validateStepAction(
+			"enterPhoneNumberStep",
+			"submitButton",
+			inputs
+		);
+
+		const newState = workflow.getCurrentState();
+
+		const updatedStepMetadata =
+			newState?.metadata[workflowTemplate.steps[0].id];
+
+		expect(updatedStepMetadata).toMatchObject({
+			inputs,
+			validationErrors: { submitButton: ["Phone Number is not valid"] },
+		});
+	});
 });
