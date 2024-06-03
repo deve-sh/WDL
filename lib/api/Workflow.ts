@@ -210,6 +210,21 @@ class Workflow {
 			}
 		}
 
+		const existingMetadata = this.getStepMetadata(stepId);
+		let newMetadata: typeof existingMetadata = { ...existingMetadata, inputs };
+
+		if (validationErrors.length) {
+			newMetadata = {
+				...existingMetadata,
+				validationErrors: {
+					...existingMetadata?.validationErrors,
+					[actionId]: validationErrors,
+				},
+			};
+		}
+
+		this.setStepMetadata(stepId, newMetadata);
+
 		// Process onValidationSuccess of this step
 		if (
 			passedAllValidations &&
