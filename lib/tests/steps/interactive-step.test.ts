@@ -47,8 +47,12 @@ describe("Tests for Interactive Input Steps", () => {
 		);
 
 		expect(validationResult.isValid).toBe(true);
-		expect(validationResult.validationErrors).toHaveLength(0);
-		expect(validationResult.validationErrors[0]).not.toBeDefined();
+		expect(Object.keys(validationResult.validationErrors || {})).toHaveLength(
+			0
+		);
+		expect(
+			Object.values(validationResult.validationErrors || {})[0]
+		).not.toBeDefined();
 	});
 
 	it("should consider onValidationSuccess and onValidationError for actions & make changes to the current state of the workflow for the consumer to use", async () => {

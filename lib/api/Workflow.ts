@@ -222,7 +222,7 @@ class Workflow {
 					[actionId]: validationErrors,
 				},
 			};
-		}
+		} else newMetadata = { ...newMetadata, validationErrors: [] };
 
 		this.setStepMetadata(stepId, newMetadata);
 
