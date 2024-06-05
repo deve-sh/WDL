@@ -16,6 +16,8 @@ import useWorkflowStore from "./store";
 import useDragAndDrop from "./hooks/use-drag-and-drop";
 import useCopyAndPasteNode from "./hooks/use-copy-and-paste-node";
 
+import './builder-styles.css';
+
 type Props = {
 	readOnly?: boolean;
 };
