@@ -1,6 +1,7 @@
 {
-	"name": "workflow-builder",
+	"name": "wdl",
 	"private": true,
+	"version": "0.0.1",
 	"main": "./index.js",
 	"scripts": {
 		"test": "jest ./tests",
