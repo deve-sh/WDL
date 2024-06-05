@@ -3,12 +3,8 @@ import type { RequestOrResolverWorkflowStep } from "./RequestOrResolverWorkflowS
 
 import type { WorkflowStepResolver } from "./Resolver";
 import type { WorkflowCurrentState } from "./WorkflowCurrentState";
-import { RedirectionWorkflowStep } from "./RedirectWorkflowStep";
-
-export type WorkflowStepParticipants =
-	| "interactive-client"
-	| "client-redirector"
-	| "server";
+import type { RedirectionWorkflowStep } from "./RedirectWorkflowStep";
+import type { ConditionalWorkflowStep } from "./ConditionalWorkflowStep";
 
 export type WorkflowStep = {
 	id: string;
@@ -16,7 +12,12 @@ export type WorkflowStep = {
 	heading?: string;
 	description?: string;
 	additionalData?: Record<string, any>;
-} & (InteractiveWorkflowStep | RequestOrResolverWorkflowStep | RedirectionWorkflowStep);
+} & (
+	| InteractiveWorkflowStep
+	| RequestOrResolverWorkflowStep
+	| RedirectionWorkflowStep
+	| ConditionalWorkflowStep
+);
 
 export type WorkflowDefinitionSchema = {
 	id: string;

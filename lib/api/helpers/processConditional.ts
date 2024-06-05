@@ -17,7 +17,7 @@ const processConditional = (
 	const evaluationFunction = new Function(conditionExpressionToEvaluate);
 	const outputOfEvaluation = evaluationFunction();
 
-	return outputOfEvaluation;
+	return !!outputOfEvaluation;
 };
 
 export default processConditional;

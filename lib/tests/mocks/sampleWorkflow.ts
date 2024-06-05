@@ -50,7 +50,7 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 				endpoint: "http://localhost:5000/sendOTPToPhoneNumber",
 				method: "post",
 				headers: {
-					authorization: '{{ env.otpApiKey }}'
+					authorization: "{{ env.otpApiKey }}",
 				},
 				body: {
 					phoneNumber: "{{ steps.enterPhoneNumberStep.inputs.phoneNumber }}",
@@ -76,6 +76,15 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 			heading: "Receiving your data from the Webhook",
 			description: "",
 			action: { type: "resolver" },
+		},
+
+		{
+			id: "conditionalAssessmentStep",
+			type: "condition",
+			condition: "steps.sendingOTPStage.inputs.phoneNumber === '1234567890'",
+			onTrue: { targetStep: "startOAuthStep" },
+			onFalse: { targetStep: "webhookStep" },
+			name: "Assessing the success of OTP input",
 		},
 	],
 };

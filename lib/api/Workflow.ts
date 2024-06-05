@@ -262,7 +262,23 @@ class Workflow {
 		if (resolverFunc)
 			return resolverFunc(this, this.options.environmentContext || {});
 
-		// Handling
+		// Handling steps with pre-defined behaviour
+		if (
+			step.type === "condition" &&
+			step.condition &&
+			step.onTrue &&
+			step.onFalse
+		) {
+			const result = processConditional(
+				step.condition,
+				this.generateVariablesForInterpolation()
+			);
+
+			if (result) return this.goToStep(step.onTrue.targetStep, { result });
+			
+			return this.goToStep(step.onFalse.targetStep, { result });
+		}
+
 		if (
 			step.type === "request-or-resolver" &&
 			step.action &&
