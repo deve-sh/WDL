@@ -86,6 +86,15 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 			onFalse: { targetStep: "webhookStep" },
 			name: "Assessing the success of OTP input",
 		},
+
+		{
+			id: "evaluationStep",
+			type: "evaluation",
+			expression:
+				"const countryCode = '+91'; const phone = steps.sendingOTPStage.inputs.phoneNumber; return countryCode + phone;",
+			onComplete: { targetStep: "startOAuthStep" },
+			name: "Assessing inputs",
+		},
 	],
 };
 

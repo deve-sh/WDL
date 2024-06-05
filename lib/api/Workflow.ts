@@ -9,6 +9,7 @@ import type { InteractiveWorkflowStep } from "../types/InteractiveWorkflowStep";
 
 import parseAndResolveTemplateString from "./helpers/parseAndResolveTemplateString";
 import processConditional from "./helpers/processConditional";
+import processEvaluation from "./helpers/processEvaluation";
 import request from "./helpers/request";
 
 class Workflow {
@@ -275,8 +276,16 @@ class Workflow {
 			);
 
 			if (result) return this.goToStep(step.onTrue.targetStep, { result });
-			
 			return this.goToStep(step.onFalse.targetStep, { result });
+		}
+
+		if (step.type === "evaluation" && step.expression && step.onComplete) {
+			const result = processEvaluation(
+				step.expression,
+				this.generateVariablesForInterpolation()
+			);
+
+			return this.goToStep(step.onComplete.targetStep, { result });
 		}
 
 		if (

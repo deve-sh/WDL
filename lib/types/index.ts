@@ -5,6 +5,7 @@ import type { WorkflowStepResolver } from "./Resolver";
 import type { WorkflowCurrentState } from "./WorkflowCurrentState";
 import type { RedirectionWorkflowStep } from "./RedirectWorkflowStep";
 import type { ConditionalWorkflowStep } from "./ConditionalWorkflowStep";
+import type { EvaluationWorkflowStep } from "./EvaluationWorkflowStep";
 
 export type WorkflowStep = {
 	id: string;
@@ -17,6 +18,7 @@ export type WorkflowStep = {
 	| RequestOrResolverWorkflowStep
 	| RedirectionWorkflowStep
 	| ConditionalWorkflowStep
+	| EvaluationWorkflowStep
 );
 
 export type WorkflowDefinitionSchema = {
