@@ -6,7 +6,7 @@
 		"test": "jest ./tests",
 		"test:coverage": "npm run test -- --coverage --coverageDirectory=./coverage --collectCoverageFrom=**/api/**/*.ts",
 		"compile": "node ./scripts/compile-and-ready.js",
-		"publish": "npm run compile && node ./scripts/publish.js"
+		"publish-package": "npm run compile && node ./scripts/publish.js"
 	},
 	"dependencies": {
 		"handlebars": "^4.7.8",
