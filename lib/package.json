@@ -1,7 +1,7 @@
 {
 	"name": "workflow-builder",
 	"private": true,
-	"main": "./build/index.js",
+	"main": "./index.js",
 	"scripts": {
 		"test": "jest ./tests",
 		"test:coverage": "npm run test -- --coverage --coverageDirectory=./coverage --collectCoverageFrom=**/api/**/*.ts",
