@@ -22,10 +22,10 @@ export default async function request(
 			variables
 		);
 
-		let fetcher: typeof import("node-fetch")["default"] | Window["fetch"];
+		let fetcher: Window["fetch"];
 
 		if (typeof window === "undefined")
-			fetcher = (await import("node-fetch")).default;
+			fetcher = (await import("isomorphic-fetch")).default;
 		else fetcher = window.fetch;
 
 		response = await fetcher(args.endpoint, {

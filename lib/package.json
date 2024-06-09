@@ -1,6 +1,6 @@
 {
 	"name": "wdl",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"main": "./index.js",
 	"scripts": {
 		"test": "jest ./tests",
@@ -10,14 +10,15 @@
 	},
 	"dependencies": {
 		"handlebars": "^4.7.8",
-		"node-fetch": "^3.3.2"
+		"isomorphic-fetch": "^3.0.0"
 	},
 	"devDependencies": {
-		"tsup": "^8.0.2",
 		"@babel/preset-typescript": "^7.24.6",
 		"@jest/globals": "^29.7.0",
+		"@types/isomorphic-fetch": "^0.0.39",
 		"jest": "^29.7.0",
-		"ts-jest": "^29.1.4"
+		"ts-jest": "^29.1.4",
+		"tsup": "^8.0.2"
 	},
 	"license": "MIT"
 }
