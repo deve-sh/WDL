@@ -3,7 +3,7 @@ import { Flex, Skeleton } from "@chakra-ui/react";
 import useLayoutCorrection from "./hooks/use-layout-correction";
 
 import Builder from "./Builder";
-import EditorSidebar from "./Sidebar";
+import EditorSidebar from "./components/Sidebar";
 
 export default function BuilderFeature() {
 	useLayoutCorrection();

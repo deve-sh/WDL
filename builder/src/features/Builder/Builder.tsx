@@ -10,7 +10,7 @@ import ReactFlow, {
 
 import "reactflow/dist/style.css";
 
-import nodeTypes from "./node-types";
+import nodeTypes from "./blocks/node-types";
 
 import useWorkflowStore from "./store";
 import useDragAndDrop from "./hooks/use-drag-and-drop";
