@@ -8,7 +8,7 @@ import {
 	isNodeConnectedToAnyOtherNodes,
 } from "../utils/flowHelpers";
 
-import useWorkflowStore from "../store";
+import useWorkflowStore, { workflowStore } from "../store";
 
 const recursivelyCreateWorkflowTemplate = (
 	currentNode: Node,
@@ -136,35 +136,40 @@ const recursivelyCreateWorkflowTemplate = (
 const initWorkflowTemplate = { id: "sample-workflow", steps: [] };
 
 const useCodeForWorkflow = () => {
-	const { nodes, edges } = useWorkflowStore();
+	const store = useWorkflowStore();
 
 	const [computedTemplate, setComputedTemplate] =
 		useState<WorkflowDefinitionSchema>(initWorkflowTemplate);
 
+	const computeTemplate = () => {
+		const workflowNodes = workflowStore.getState().nodes;
+		const workflowEdges = workflowStore.getState().edges;
+
+		const startNode = workflowNodes.find((node) => node.type === "start");
+
+		if (!startNode)
+			return "Add a start block to your workflow to see automatic code generated here.";
+
+		const computedWorkflowTemplateDefintion = recursivelyCreateWorkflowTemplate(
+			startNode,
+			workflowNodes,
+			workflowEdges,
+			JSON.parse(JSON.stringify(initWorkflowTemplate))
+		);
+
+		setComputedTemplate(computedWorkflowTemplateDefintion);
+	};
+
 	useEffect(() => {
 		// Debounce
-		const timeout = setTimeout(() => {
-			const startNode = nodes.find((node) => node.type === "start");
-
-			if (!startNode)
-				return {
-					message:
-						"Add a start block to your workflow to see automatic code generated here.",
-				};
-
-			const computedWorkflowTemplateDefintion =
-				recursivelyCreateWorkflowTemplate(
-					startNode,
-					nodes,
-					edges,
-					initWorkflowTemplate
-				);
-
-			setComputedTemplate(computedWorkflowTemplateDefintion);
-		}, 500);
-
+		const timeout = setTimeout(computeTemplate, 250);
 		return () => clearTimeout(timeout);
-	}, [nodes, edges]);
+	}, [store]);
+
+	useEffect(() => {
+		// Initializer
+		computeTemplate();
+	}, []);
 
 	return JSON.stringify(computedTemplate, null, 4);
 };

@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 
 import ComponentPanel from "./ComponentPanel";
 import ExportAndImport from "./ExportAndImport";
+import TemplateCodeViewer from "./TemplateCodeViewer";
 
 const SidebarWrapper = styled.div`
 	width: 20vw;
@@ -18,6 +19,8 @@ const EditorSidebar = () => {
 			<ExportAndImport />
 			<Divider my="6" />
 			<ComponentPanel />
+			<Divider my="6" />
+			<TemplateCodeViewer />
 		</SidebarWrapper>
 	);
 };

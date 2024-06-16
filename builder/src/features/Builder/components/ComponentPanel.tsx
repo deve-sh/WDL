@@ -41,34 +41,32 @@ const ComponentPanel = () => {
 	);
 
 	return (
-		<>
-			<VStack gap="0.5rem" mt="4">
-				<Text align="center" mb="4">
-					Drag and Drop blocks onto the canvas
-				</Text>
-				{blocks.map((block) => {
-					return (
-						<Fragment key={block.type}>
-							<DraggableComponentNode
-								onClick={() =>
-									toast({
-										title: "You can drag and drop this block onto the canvas",
-										status: "info",
-										isClosable: true,
-									})
-								}
-								// @ts-expect-error Works but React Flow doesn't expose a type
-								onDragStart={onDragStart(block.type)}
-								draggable={!block.disabled}
-							>
-								{block.label}
-							</DraggableComponentNode>
-							<br />
-						</Fragment>
-					);
-				})}
-			</VStack>
-		</>
+		<VStack gap="0.5rem" mt="4">
+			<Text align="center" mb="4">
+				Drag and Drop blocks onto the canvas
+			</Text>
+			{blocks.map((block, index) => {
+				return (
+					<Fragment key={block.type}>
+						<DraggableComponentNode
+							onClick={() =>
+								toast({
+									title: "You can drag and drop this block onto the canvas",
+									status: "info",
+									isClosable: true,
+								})
+							}
+							// @ts-expect-error Works but React Flow doesn't expose a type
+							onDragStart={onDragStart(block.type)}
+							draggable={!block.disabled}
+						>
+							{block.label}
+						</DraggableComponentNode>
+						{index !== blocks.length - 1 && <br />}
+					</Fragment>
+				);
+			})}
+		</VStack>
 	);
 };
 
