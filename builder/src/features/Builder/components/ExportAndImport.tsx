@@ -1,12 +1,15 @@
 import { useRef } from "react";
 
-import { MdDownload, MdUpload } from "react-icons/md";
+import { MdDownload, MdResetTv, MdUpload } from "react-icons/md";
 import { Button, HStack } from "@chakra-ui/react";
 
 import useExportAndImportWorkflow from "../hooks/use-export-and-import-workflow";
+import useResetWorkflow from "../hooks/use-reset-workflow";
 
 const ExportAndImport = () => {
 	const { exportWorkflow, importWorkflow } = useExportAndImportWorkflow();
+	const { resetWorkflow, isResettable } = useResetWorkflow();
+
 	const fileUploadInputRef = useRef<HTMLInputElement | null>(null);
 
 	return (
@@ -16,7 +19,7 @@ const ExportAndImport = () => {
 				leftIcon={<MdDownload />}
 				onClick={exportWorkflow}
 			>
-				Export For Later
+				Export
 			</Button>
 			<Button
 				leftIcon={<MdUpload />}
@@ -36,6 +39,15 @@ const ExportAndImport = () => {
 					);
 				}}
 			/>
+			<Button
+				leftIcon={<MdResetTv />}
+				colorScheme="red"
+				variant="ghost"
+				onClick={resetWorkflow}
+				isDisabled={!isResettable}
+			>
+				Reset
+			</Button>
 		</HStack>
 	);
 };
