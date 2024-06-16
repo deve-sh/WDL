@@ -4,12 +4,13 @@ import { Text } from "@chakra-ui/react";
 
 import CommonNodeWrapper from "./CommonNodeWrapper";
 
-const StartBlock = React.memo(() => {
+const EvaluateExpressionBlock = React.memo(() => {
 	return (
 		<CommonNodeWrapper>
-			<Text>Start</Text>
+			<Text>Evaluate Expression</Text>
+			<Handle type="target" position={Position.Top} />
 			<Handle type="source" position={Position.Bottom} />
 		</CommonNodeWrapper>
 	);
 });
-export default StartBlock;
+export default EvaluateExpressionBlock;

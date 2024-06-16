@@ -5,10 +5,13 @@ import { Text, VStack, useToast } from "@chakra-ui/react";
 import useAPIFlow from "../store";
 import useDragAndDrop from "../hooks/use-drag-and-drop";
 
-const DraggableComponentNode = styled.div`
+const DraggableComponentNode = styled.div<{ draggable: boolean }>`
 	border: 0.125rem solid var(--chakra-colors-chakra-border-color);
 	padding: 1rem;
 	border-radius: 0.25rem;
+	background: ${({ draggable }) =>
+		!draggable ? "var(--chakra-colors-chakra-border-color)" : ""};
+	opacity: ${({ draggable }) => (!draggable ? "0.5" : "")};
 	width: 100%;
 	text-align: center;
 	cursor: grab;
@@ -28,10 +31,11 @@ const ComponentPanel = () => {
 	const blocks = useMemo(
 		() => [
 			{ type: "start", label: "Start", disabled: shouldHideStartBlockCreator },
-			{ type: "send-request", label: "Send Request" },
-			{ type: "if-condition", label: "If Condition" },
+			{ type: "interactive-input", label: "Interactive Input Step" },
+			{ type: "request", label: "Make A Request" },
+			{ type: "resolver", label: "Resolver / Manual Step" },
 			{ type: "evaluate", label: "Evaluate Expression" },
-			{ type: "delay", label: "Delay" },
+			{ type: "if-else", label: "Conditional Expression" },
 		],
 		[shouldHideStartBlockCreator]
 	);
@@ -43,7 +47,6 @@ const ComponentPanel = () => {
 					Drag and Drop blocks onto the canvas
 				</Text>
 				{blocks.map((block) => {
-					if (block.disabled) return null;
 					return (
 						<Fragment key={block.type}>
 							<DraggableComponentNode
@@ -56,7 +59,7 @@ const ComponentPanel = () => {
 								}
 								// @ts-expect-error Works but React Flow doesn't expose a type
 								onDragStart={onDragStart(block.type)}
-								draggable
+								draggable={!block.disabled}
 							>
 								{block.label}
 							</DraggableComponentNode>
