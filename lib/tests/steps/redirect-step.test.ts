@@ -20,6 +20,7 @@ describe("Redirection/OAuth-Flow Step tests", () => {
 				general: {},
 				redirectURLComputer: { finalURL: oAuthURL },
 			},
+			executionSequence: []
 		});
 
 		await workflow.processCurrentStep();
@@ -33,6 +34,7 @@ describe("Redirection/OAuth-Flow Step tests", () => {
 		const workflow = new Workflow(workflowTemplate).loadCurrentState({
 			currentStep: "startOAuthStep",
 			metadata: { general: {} },
+			executionSequence: []
 		});
 
 		try {
@@ -48,6 +50,7 @@ describe("Redirection/OAuth-Flow Step tests", () => {
 		const workflow = new Workflow(workflowTemplate).loadCurrentState({
 			currentStep: "startOAuthStep",
 			metadata: { general: {} },
+			executionSequence: []
 		});
 
 		let resolverCalled = false;

@@ -15,6 +15,7 @@ describe("Conditional Workflow Step tests", () => {
 				general: {},
 				sendingOTPStage: { inputs: { phoneNumber: "1234567890" } },
 			},
+			executionSequence: [],
 		});
 
 		await workflow.processCurrentStep();
@@ -31,6 +32,7 @@ describe("Conditional Workflow Step tests", () => {
 				general: {},
 				sendingOTPStage: { inputs: { phoneNumber: "1234567891" } },
 			},
+			executionSequence: [],
 		});
 
 		await workflow.processCurrentStep();
@@ -39,7 +41,7 @@ describe("Conditional Workflow Step tests", () => {
 			conditionalStep.onFalse.targetStep
 		);
 
-        // Metadata stored in the step for usage in other steps
+		// Metadata stored in the step for usage in other steps
 		expect(
 			workflow.getCurrentState().metadata.conditionalAssessmentStep.result
 		).toBe(false);

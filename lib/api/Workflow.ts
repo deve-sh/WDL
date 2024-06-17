@@ -18,6 +18,7 @@ class Workflow {
 	currentState: WorkflowCurrentState = {
 		currentStep: "",
 		metadata: { general: {} },
+		executionSequence: [],
 	};
 	options: WorkflowInitOptions;
 
@@ -50,6 +51,7 @@ class Workflow {
 		this.currentState = currentState || {
 			currentStep: this.template.steps[0].id,
 			metadata: { general: {} },
+			executionSequence: [this.template.steps[0].id],
 		};
 
 		return this;
@@ -111,7 +113,11 @@ class Workflow {
 		}
 
 		const currentState = this.getCurrentState() as WorkflowCurrentState;
-		this.loadCurrentState({ ...currentState, currentStep: stepId });
+		this.loadCurrentState({
+			...currentState,
+			currentStep: stepId,
+			executionSequence: [...(currentState.executionSequence || []), stepId],
+		});
 
 		return true;
 	}

@@ -54,6 +54,19 @@ describe("Core APIs Tests for Workflow Library", () => {
 		});
 	});
 
+	test("Execution sequence should work as expected", async () => {
+		const workflow = new Workflow(workflowTemplate).loadCurrentState();
+
+		expect(workflow.getCurrentState().executionSequence.length).toBe(1);
+		expect(workflow.getCurrentState().executionSequence[0]).toBe("enterPhoneNumberStep");
+
+		workflow.goToStep("sendingOTPStage");
+
+		expect(workflow.getCurrentState().executionSequence.length).toBe(2);
+		expect(workflow.getCurrentState().executionSequence[0]).toBe("enterPhoneNumberStep");
+		expect(workflow.getCurrentState().executionSequence[1]).toBe("sendingOTPStage");
+	});
+
 	test("Resolver registration and getters", async () => {
 		const workflow = new Workflow(workflowTemplate).loadCurrentState();
 

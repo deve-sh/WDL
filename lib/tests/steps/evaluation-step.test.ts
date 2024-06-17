@@ -15,6 +15,7 @@ describe("Evaluation Workflow Step tests", () => {
 				general: {},
 				sendingOTPStage: { inputs: { phoneNumber: "1234567890" } },
 			},
+			executionSequence: []
 		});
 
 		await workflow.processCurrentStep();

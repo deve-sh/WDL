@@ -14,6 +14,7 @@ describe("Tests for request/resolver steps", () => {
 		const workflow = new Workflow(workflowTemplate).loadCurrentState({
 			currentStep: "webhookStep",
 			metadata: { general: {} },
+			executionSequence: [],
 		});
 
 		try {
@@ -37,6 +38,7 @@ describe("Tests for request/resolver steps", () => {
 		}).loadCurrentState({
 			currentStep: "webhookStep",
 			metadata: { general: {} },
+			executionSequence: [],
 		});
 
 		await workflow.processCurrentStep();
@@ -81,6 +83,7 @@ describe("Tests for request/resolver steps", () => {
 				general: {},
 				enterPhoneNumberStep: { inputs: { phoneNumber: "1234567890" } },
 			},
+			executionSequence: [],
 		});
 
 		await workflow.processCurrentStep();

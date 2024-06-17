@@ -6,9 +6,11 @@ export type WorkflowCurrentState = {
 
 		// For step level metadata
 		[stepId: string]: {
-            // Client-side
+			// Client-side
 			inputs?: Record<string, any>;
 			[key: string]: any;
 		};
 	};
+	// Stack of steps executed
+	executionSequence: string[];
 };
