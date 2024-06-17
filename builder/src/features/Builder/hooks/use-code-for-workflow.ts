@@ -171,7 +171,7 @@ const useCodeForWorkflow = () => {
 		computeTemplate();
 	}, []);
 
-	return JSON.stringify(computedTemplate, null, 4);
+	return JSON.stringify(computedTemplate, null, 2);
 };
 
 export default useCodeForWorkflow;

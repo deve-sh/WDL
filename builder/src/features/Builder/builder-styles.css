@@ -34,3 +34,8 @@
 	border-color: var(--chakra-colors-red-500);
 	box-shadow: none;
 }
+
+/* Syntax Highlighting Overwriters */
+.token.operator {
+	background: transparent !important;
+}

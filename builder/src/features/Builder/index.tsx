@@ -10,6 +10,7 @@ export default function BuilderFeature() {
 
 	return (
 		<>
+			<header id="header " />
 			<Flex alignItems="center" justifyContent="center">
 				<EditorSidebar />
 				<div
@@ -20,7 +21,6 @@ export default function BuilderFeature() {
 						<Builder />
 					</Skeleton>
 				</div>
-				{/* <SaveButton onSaveClick={saveAPIRoute} /> */}
 			</Flex>
 		</>
 	);

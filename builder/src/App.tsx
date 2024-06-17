@@ -1,12 +1,18 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ChakraBaseProvider, theme } from "@chakra-ui/react";
 
+import Home from "./features/Home";
 import BuilderFeature from "./features/Builder";
 
 function App() {
 	return (
 		<ChakraBaseProvider theme={theme}>
-			<header id="header" />
-			<BuilderFeature />
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" Component={Home} />
+					<Route path="/builder" Component={BuilderFeature} />
+				</Routes>
+			</BrowserRouter>
 		</ChakraBaseProvider>
 	);
 }
