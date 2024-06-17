@@ -11,7 +11,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-
+import { Link as RouterLink } from "react-router-dom";
 import { IoBuild } from "react-icons/io5";
 import { ImNpm } from "react-icons/im";
 
@@ -47,13 +47,13 @@ const Home = () => (
 						variant="solid"
 						leftIcon={<IoBuild />}
 					>
-						Try The Builder
+						<RouterLink to="/builder">Try The Builder</RouterLink>
 					</Button>
 					<Button
 						size="lg"
 						p={{ lg: "8", base: "4" }}
 						colorScheme="red"
-                        variant="outline"
+						variant="outline"
 						leftIcon={<ImNpm />}
 					>
 						<Link
