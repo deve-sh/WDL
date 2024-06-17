@@ -1,0 +1,22 @@
+*::-webkit-scrollbar {
+	width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+	background: #f1f1f1;
+    height: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+	background: #cfcfcf;
+    border-radius: 7.5px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: #afafaf;
+}
+
+/* Syntax Highlighting Overwriters */
+.token.operator {
+	background: transparent !important;
+}

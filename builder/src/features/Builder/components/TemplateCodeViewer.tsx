@@ -1,5 +1,6 @@
 import { Code, Flex, Text, Tooltip, useToast } from "@chakra-ui/react";
 import styled from "@emotion/styled";
+import { MdCode } from "react-icons/md";
 
 // @ts-expect-error PrismJS's types somehow don't work here
 import { highlight, languages } from "prismjs/components/prism-core";
@@ -8,7 +9,6 @@ import useCodeForWorkflow from "../hooks/use-code-for-workflow";
 
 import "prismjs/components/prism-json";
 import "prismjs/themes/prism.min.css";
-import { MdCode } from "react-icons/md";
 
 const StyledCode = styled(Code)`
 	padding: 1rem;

@@ -3,39 +3,9 @@
 	padding: 1rem 2rem;
 	border-radius: 0.5rem;
 	background: var(--chakra-colors-chakra-body-bg);
-	/* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); */
 }
 
 .react-flow__node:active,
-.react-flow__node:focus,
-.react-flow__node-send-request:active,
-.react-flow__node-send-request:focus,
-.react-flow__node-if-condition:active,
-.react-flow__node-if-condition:focus,
-.react-flow__node-evaluate:active,
-.react-flow__node-evaluate:focus,
-.react-flow__node-response:focus,
-.react-flow__node-response:active,
-.react-flow__node-delay:active,
-.react-flow__node-delay:focus {
+.react-flow__node:focus {
 	border-color: #333333;
-}
-
-.react-flow__node:has(div.successful) {
-	border-width: 2px;
-	border-style: dashed;
-	border-color: var(--chakra-colors-green-500);
-	box-shadow: none;
-}
-
-.react-flow__node:has(div.errored) {
-	border-width: 2px;
-	border-style: dashed;
-	border-color: var(--chakra-colors-red-500);
-	box-shadow: none;
-}
-
-/* Syntax Highlighting Overwriters */
-.token.operator {
-	background: transparent !important;
 }
