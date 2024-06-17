@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { type WorkflowDefinitionSchema } from "lib/dist";
+import { type WorkflowDefinitionSchema } from "wdl";
 import { type Edge, type Node, getOutgoers } from "reactflow";
 
 import {

@@ -22,7 +22,7 @@
     "react-simple-code-editor": "^0.13.1",
     "reactflow": "^11.11.3",
     "uuid": "^9.0.1",
-    "workflow-builder": "../lib/dist",
+    "wdl": "^0.0.5",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
