@@ -7,7 +7,7 @@ import CommonNodeWrapper from "./CommonNodeWrapper";
 const InteractiveInputStep = React.memo(() => {
 	return (
 		<CommonNodeWrapper>
-			<Text>Interactive Input Step</Text>
+			<Text>Interactive User Inputs</Text>
 			<Handle type="target" position={Position.Top} />
 			<Handle type="source" position={Position.Bottom} />
 		</CommonNodeWrapper>
