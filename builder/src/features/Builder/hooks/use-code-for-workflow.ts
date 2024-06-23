@@ -97,6 +97,16 @@ const recursivelyCreateWorkflowTemplate = (
 			(edge) => edge.sourceHandle === "onError"
 		);
 
+		let requestBody = {},
+			requestHeaders = {};
+
+		try {
+			requestBody = JSON.parse(currentNode.data?.body || "{}");
+			requestHeaders = JSON.parse(currentNode.data?.headers || "{}");
+		} catch {
+			//
+		}
+
 		if (
 			onSuccessEdge ||
 			onErrorEdge ||
@@ -107,9 +117,9 @@ const recursivelyCreateWorkflowTemplate = (
 				type: "request-or-resolver",
 				action: {
 					type: "request",
-					endpoint: currentNode.data.requestProps?.endpoint || "",
-					body: currentNode.data.requestProps?.body || {},
-					headers: currentNode.data.requestProps?.headers || {},
+					endpoint: currentNode.data?.endpoint || "",
+					body: requestBody || {},
+					headers: requestHeaders || {},
 					onSuccess: { targetStep: onSuccessEdge?.target || "" },
 					onError: { targetStep: onErrorEdge?.target || "" },
 				},

@@ -13,7 +13,7 @@ import {
 import useWorkflowStore from "../../store";
 
 import RequestBlockOptions from "./RequestBlock";
-import ConditionalBlockOptions from "./ConditionalBlock";
+import IfElseBlockOptions from "./IfElseBlock";
 import EvaluateBlockOptions from "./EvaluateBlock";
 
 const BlockDataEditor = () => {
@@ -36,15 +36,17 @@ const BlockDataEditor = () => {
 				<ModalCloseButton />
 				<ModalBody>
 					{node?.type === "request" && <RequestBlockOptions />}
-					{node?.type === "if-else" && <ConditionalBlockOptions />}
-                    {node?.type === "evaluate" && <EvaluateBlockOptions />}
+					{node?.type === "if-else" && <IfElseBlockOptions />}
+					{node?.type === "evaluate" && <EvaluateBlockOptions />}
 				</ModalBody>
 
 				<ModalFooter>
 					<Button variant="ghost" mr={3} onClick={onClose}>
 						Close
 					</Button>
-					<Button colorScheme="teal">Done</Button>
+					<Button colorScheme="teal" onClick={onClose}>
+						Done
+					</Button>
 				</ModalFooter>
 			</ModalContent>
 		</Modal>

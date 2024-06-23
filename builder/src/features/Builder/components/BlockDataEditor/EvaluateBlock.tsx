@@ -4,7 +4,7 @@ import useWorkflowStore from "../../store";
 
 import CodeEditor from "../../../../components/CodeEditor";
 
-import useGetAndSetMetadata from "./useGetAndSetBlockMetadata";
+import useGetAndSetMetadata from "./use-get-and-set-block-metadata";
 
 const EvaluateBlockOptions = () => {
 	const { isEditable } = useWorkflowStore();

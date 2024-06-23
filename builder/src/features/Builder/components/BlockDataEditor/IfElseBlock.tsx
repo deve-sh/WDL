@@ -4,7 +4,7 @@ import useWorkflowStore from "../../store";
 
 import CodeEditor from "../../../../components/CodeEditor";
 
-import useGetAndSetMetadata from "./useGetAndSetBlockMetadata";
+import useGetAndSetMetadata from "./use-get-and-set-block-metadata";
 
 const ConditionalBlockOptions = () => {
 	const { isEditable } = useWorkflowStore();
@@ -12,7 +12,7 @@ const ConditionalBlockOptions = () => {
 	const [metadata, setMetadata] = useGetAndSetMetadata();
 
 	const onChange = (code: string) => {
-		setMetadata({ expression: code });
+		setMetadata({ condition: code });
 	};
 
 	return (
@@ -21,7 +21,7 @@ const ConditionalBlockOptions = () => {
 				<FormLabel>Conditional expression</FormLabel>
 				<CodeEditor
 					placeholder="steps.enterOTPStep.inputs.otp !== ''"
-					value={metadata["expression"] || ""}
+					value={metadata["condition"] || ""}
 					onChange={onChange}
 					language="js"
 					disabled={!isEditable}

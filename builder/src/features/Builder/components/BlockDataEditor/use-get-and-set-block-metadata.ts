@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useWorkflowStore from "../../store";
 
 const useGetAndSetMetadata = () => {
@@ -8,22 +8,30 @@ const useGetAndSetMetadata = () => {
 	// so we don't update the store on every change
 	// preventing excessing re-rendering of the entire editor
 	const metadataToStartWith = useMemo(() => {
-		return nodes.find((node) => node.id === editingMetadataFor)?.data;
+		return nodes.find((node) => node.id === editingMetadataFor)?.data || {};
 	}, []);
 
+	const _metadata = useRef(null);
 	const [metadata, setMetadata] = useState(metadataToStartWith);
+
+	const updateMetadata = useCallback((updates: typeof metadata) => {
+		_metadata.current = updates;
+		setMetadata(updates);
+	}, []);
 
 	useEffect(() => {
 		// Update metadata for block on unmounting
 		return () => {
 			const updatedNodes = nodes.map((node) =>
-				node.id !== editingMetadataFor ? node : { ...node, data: metadata }
+				node.id !== editingMetadataFor
+					? node
+					: { ...node, data: _metadata.current }
 			);
 			setNodes(updatedNodes);
 		};
 	}, []);
 
-	return [metadata, setMetadata];
+	return [metadata, updateMetadata];
 };
 
 export default useGetAndSetMetadata;

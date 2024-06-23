@@ -5,7 +5,7 @@ import { VStack, Select, FormControl, FormLabel } from "@chakra-ui/react";
 import useWorkflowStore from "../../store";
 
 import CodeEditor from "../../../../components/CodeEditor";
-import useGetAndSetMetadata from "./useGetAndSetBlockMetadata";
+import useGetAndSetMetadata from "./use-get-and-set-block-metadata";
 
 const RequestBlockOptions = () => {
 	const { isEditable } = useWorkflowStore();
@@ -13,19 +13,19 @@ const RequestBlockOptions = () => {
 	const [metadata, setMetadata] = useGetAndSetMetadata();
 
 	const onURLChange = (url: string) => {
-		setMetadata({ endpoint: url.replace(/\n/gi, "") });
+		setMetadata({ ...metadata, endpoint: url.replace(/\n/gi, "") });
 	};
 
 	const onMethodChange = (event: ChangeEvent<HTMLSelectElement>) => {
-		setMetadata({ requestMethod: event.target.value });
+		setMetadata({ ...metadata, requestMethod: event.target.value });
 	};
 
 	const onBodyChange = (body: string) => {
-		setMetadata({ body });
+		setMetadata({ ...metadata, body });
 	};
 
 	const onHeadersChange = (headers: string) => {
-		setMetadata({ headers });
+		setMetadata({ ...metadata, headers });
 	};
 
 	return (
