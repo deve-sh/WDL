@@ -3,7 +3,7 @@ import { VStack, FormControl, FormLabel } from "@chakra-ui/react";
 import useWorkflowStore from "../../store";
 import useGetAndSetMetadata from "./use-get-and-set-block-metadata";
 
-import CodeEditor from "../../../../components/CodeEditor";
+import CodeEditor from "../CodeEditor";
 import CommonMetadataForm from "./CommonMetadataEditor";
 
 const EvaluateBlockOptions = () => {

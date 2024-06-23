@@ -4,7 +4,7 @@ import { VStack, Select, FormControl, FormLabel } from "@chakra-ui/react";
 
 import useWorkflowStore from "../../store";
 
-import CodeEditor from "../../../../components/CodeEditor";
+import CodeEditor from "../CodeEditor";
 import useGetAndSetMetadata from "./use-get-and-set-block-metadata";
 import CommonMetadataForm from "./CommonMetadataEditor";
 

@@ -35,7 +35,7 @@ const recursivelyCreateWorkflowTemplate = (
 			foundNode.data?.["userEnteredId"] ||
 			foundNode.data?.["id"] ||
 			foundNode.id
-		);
+		).replace("-", "_");
 	};
 
 	if (

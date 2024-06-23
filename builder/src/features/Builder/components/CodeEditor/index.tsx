@@ -2,6 +2,8 @@
 import Editor from "react-simple-code-editor";
 import styled from "@emotion/styled";
 
+import VariableInjector from "./VariableInjector";
+
 // @ts-expect-error PrismJS's types somehow don't work here
 import Prism, { highlight, languages } from "prismjs/components/prism-core";
 import "prismjs/components/prism-clike";
@@ -38,17 +40,20 @@ const StyledEditor = styled(Editor)`
 `;
 
 const CodeEditor = (props: Props) => (
-	<StyledEditor
-		value={props.value}
-		onValueChange={!props.disabled ? props.onChange : () => null}
-		highlight={(code) => highlight(code, languages[props.language])}
-		padding={10}
-		placeholder={props.placeholder}
-		style={{
-			fontFamily: '"Fira code", "Fira Mono", monospace',
-			fontSize: 12,
-		}}
-	/>
+	<div style={{ position: "relative" }}>
+		<StyledEditor
+			value={props.value}
+			onValueChange={!props.disabled ? props.onChange : () => null}
+			highlight={(code) => highlight(code, languages[props.language])}
+			padding={10}
+			placeholder={props.placeholder}
+			style={{
+				fontFamily: '"Fira code", "Fira Mono", monospace',
+				fontSize: 12,
+			}}
+		/>
+		<VariableInjector value={props.value} onChange={props.onChange} />
+	</div>
 );
 
 export default CodeEditor;
