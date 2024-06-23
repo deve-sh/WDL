@@ -9,11 +9,7 @@ const CommonNodeWrapper = ({ children }: { children: React.ReactNode }) => {
 
 	const toggleEditor = useCallback(() => {
 		const nodeToEdit = nodes.find((node) => node.id === nodeId);
-		if (
-			nodeToEdit &&
-			nodeToEdit.type !== "start" &&
-			nodeToEdit.type !== "resolver"
-		)
+		if (nodeToEdit && nodeToEdit.type !== "start")
 			setEditingMetadataFor(nodeId);
 	}, [nodeId]);
 

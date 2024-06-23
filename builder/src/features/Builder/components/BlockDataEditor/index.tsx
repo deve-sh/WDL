@@ -15,6 +15,7 @@ import useWorkflowStore from "../../store";
 import RequestBlockOptions from "./RequestBlock";
 import IfElseBlockOptions from "./IfElseBlock";
 import EvaluateBlockOptions from "./EvaluateBlock";
+import ResolverBlockOptions from "./ResolverBlock";
 
 const BlockDataEditor = () => {
 	const { nodes, editingMetadataFor, setEditingMetadataFor } =
@@ -38,6 +39,7 @@ const BlockDataEditor = () => {
 					{node?.type === "request" && <RequestBlockOptions />}
 					{node?.type === "if-else" && <IfElseBlockOptions />}
 					{node?.type === "evaluate" && <EvaluateBlockOptions />}
+					{node?.type === "resolver" && <ResolverBlockOptions />}
 				</ModalBody>
 
 				<ModalFooter>
