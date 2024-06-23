@@ -58,6 +58,14 @@ export const workflowStore = createStore(
 			onConnect: (connection: Connection) => {
 				if (connection.source === connection.target) return;
 
+				const existingEdgeFromHandle = get().edges.find(
+					(edge) =>
+						edge.source === connection.source &&
+						edge.sourceHandle === connection.sourceHandle
+				);
+
+				if (existingEdgeFromHandle) return;
+
 				set({
 					edges: addEdge(
 						{ ...connection, animated: true, type: "smoothstep" },
