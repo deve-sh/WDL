@@ -25,11 +25,22 @@ const recursivelyCreateWorkflowTemplate = (
 		return currentNode.data ? currentNode.data[field] : null;
 	};
 
+	const getUserEnteredIdOfNode = (nodeId?: string) => {
+		if (!nodeId) return "";
+
+		const foundNode = nodes.find((node) => node.id === nodeId);
+		if (!foundNode) return "";
+
+		return (
+			foundNode.data?.["userEnteredId"] ||
+			foundNode.data?.["id"] ||
+			foundNode.id
+		);
+	};
+
 	if (
 		template.steps.find(
-			(step) =>
-				step.id ===
-				(getFieldFromNodeMetadata("userEnteredId") || currentNode.id)
+			(step) => step.id === getUserEnteredIdOfNode(currentNode.id)
 		)
 	)
 		// Already added this block to our list of steps
@@ -41,10 +52,7 @@ const recursivelyCreateWorkflowTemplate = (
 		name: getFieldFromNodeMetadata("stepName") || "",
 		heading: getFieldFromNodeMetadata("heading") || "",
 		description: getFieldFromNodeMetadata("description") || "",
-		id:
-			getFieldFromNodeMetadata("userEnteredId") ||
-			getFieldFromNodeMetadata("id") ||
-			currentNode.id,
+		id: getUserEnteredIdOfNode(currentNode.id),
 	};
 
 	const edgesForThisBlock = getEdgesForNode(currentNode, edges);
@@ -67,8 +75,16 @@ const recursivelyCreateWorkflowTemplate = (
 				...commonBlockInputs,
 				type: "condition",
 				condition: getFieldFromNodeMetadata("condition") || "",
-				onTrue: { targetStep: onTrueNode ? onTrueNode.target : "" },
-				onFalse: { targetStep: onFalseNode ? onFalseNode.target : "" },
+				onTrue: {
+					targetStep: onTrueNode
+						? getUserEnteredIdOfNode(onTrueNode.target)
+						: "",
+				},
+				onFalse: {
+					targetStep: onFalseNode
+						? getUserEnteredIdOfNode(onFalseNode.target)
+						: "",
+				},
 			};
 	}
 	if (currentNode.type === "interactive-input") {
@@ -130,8 +146,12 @@ const recursivelyCreateWorkflowTemplate = (
 					body: requestBody || {},
 					method: getFieldFromNodeMetadata("method") || "GET",
 					headers: requestHeaders || {},
-					onSuccess: { targetStep: onSuccessEdge?.target || "" },
-					onError: { targetStep: onErrorEdge?.target || "" },
+					onSuccess: {
+						targetStep: getUserEnteredIdOfNode(onSuccessEdge?.target) || "",
+					},
+					onError: {
+						targetStep: getUserEnteredIdOfNode(onErrorEdge?.target) || "",
+					},
 				},
 			};
 		}
