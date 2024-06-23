@@ -1,24 +1,11 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useNodeId } from "reactflow";
-
-import useWorkflowStore from "../store";
 
 const CommonNodeWrapper = ({ children }: { children: React.ReactNode }) => {
 	const nodeId = useNodeId();
-	const { isEditable, setEditingMetadataFor, nodes } = useWorkflowStore();
-
-	const toggleEditor = useCallback(() => {
-		const nodeToEdit = nodes.find((node) => node.id === nodeId);
-		if (nodeToEdit && nodeToEdit.type !== "start")
-			setEditingMetadataFor(nodeId);
-	}, [nodeId]);
 
 	return (
-		<div
-			className="workflow-builder-node"
-			data-id={nodeId}
-			onClick={isEditable ? toggleEditor : undefined}
-		>
+		<div className="workflow-builder-node" data-id={nodeId}>
 			{children}
 		</div>
 	);

@@ -1,4 +1,11 @@
-import { useEffect, useState, useRef, type DragEvent } from "react";
+import {
+	useEffect,
+	useState,
+	useRef,
+	type DragEvent,
+	useCallback,
+	useMemo,
+} from "react";
 import ReactFlow, {
 	Background,
 	Controls,
@@ -6,6 +13,7 @@ import ReactFlow, {
 	ReactFlowProvider,
 	ReactFlowInstance,
 	MiniMap,
+	type NodeMouseHandler,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
@@ -19,6 +27,8 @@ import useDragAndDrop from "./hooks/use-drag-and-drop";
 import useCopyAndPasteNode from "./hooks/use-copy-and-paste-node";
 
 import "./builder-styles.css";
+import ContextMenu from "./components/NodeContextMenu";
+import { MdCopyAll } from "react-icons/md";
 
 type Props = {
 	readOnly?: boolean;
@@ -29,6 +39,8 @@ function Builder({ readOnly }: Props) {
 		nodes,
 		edges,
 		editingMetadataFor,
+		isEditable,
+		setEditingMetadataFor,
 		onNodesChange,
 		onEdgesChange,
 		onConnect,
@@ -60,9 +72,49 @@ function Builder({ readOnly }: Props) {
 	);
 
 	// Copy pasting of node (Without edges of course)
-	const { onNodeClick } = useCopyAndPasteNode(
+	const { copy: copyNode } = useCopyAndPasteNode(
 		reactFlowInstance as ReactFlowInstance,
 		reactFlowWrapper.current as HTMLDivElement
+	);
+
+	const [nodeContextMenuProps, setNodeContextMenuProps] = useState<{
+		nodeId: string;
+		x: number;
+		y: number;
+	} | null>(null);
+
+	const onNodeContextMenu: NodeMouseHandler = useCallback((event, node) => {
+		event.preventDefault();
+		event.stopPropagation();
+		setNodeContextMenuProps({
+			x: event.pageX,
+			y: event.pageY,
+			nodeId: node.id,
+		});
+	}, []);
+
+	const contextMenuActions = useMemo(
+		() => [
+			{
+				id: "copy",
+				text: "Copy",
+				onClick: () => copyNode(nodeContextMenuProps?.nodeId as string),
+				icon: <MdCopyAll />,
+			},
+		],
+		[nodeContextMenuProps, copyNode]
+	);
+
+	const closeContextMenu = useCallback(() => {
+		setNodeContextMenuProps(null);
+	}, []);
+
+	const toggleNodeMetadataEditor: NodeMouseHandler = useCallback(
+		(_, nodeToEdit) => {
+			if (isEditable && nodeToEdit && nodeToEdit.type !== "start")
+				setEditingMetadataFor(nodeToEdit.id);
+		},
+		[isEditable, setEditingMetadataFor]
 	);
 
 	return (
@@ -82,7 +134,8 @@ function Builder({ readOnly }: Props) {
 				// @ts-expect-error DropEvent is not exported by React Flow but matches the signature we need
 				onDrop={onDrop}
 				onInit={setReactFlowInstance}
-				onNodeClick={onNodeClick}
+				onNodeClick={toggleNodeMetadataEditor}
+				onNodeContextMenu={onNodeContextMenu}
 				elementsSelectable={!readOnly}
 				nodesConnectable={!readOnly}
 				nodesDraggable
@@ -97,6 +150,15 @@ function Builder({ readOnly }: Props) {
 			</ReactFlow>
 
 			{!!editingMetadataFor && <BlockDataEditor />}
+			{!!nodeContextMenuProps && (
+				<ContextMenu
+					x={nodeContextMenuProps.x}
+					y={nodeContextMenuProps.y}
+					actions={contextMenuActions}
+					nodeId={nodeContextMenuProps.nodeId}
+					close={closeContextMenu}
+				/>
+			)}
 		</ReactFlowProvider>
 	);
 }

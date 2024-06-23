@@ -1,5 +1,6 @@
-import { useEffect, useCallback, useState, useRef } from "react";
-import { Node, NodeMouseHandler, ReactFlowInstance } from "reactflow";
+import { useEffect, useCallback, useRef } from "react";
+import { Node, ReactFlowInstance } from "reactflow";
+import { useToast } from "@chakra-ui/react";
 import { v4 as uuid } from "uuid";
 
 import useWorkflowStore from "../store";
@@ -9,25 +10,9 @@ const useCopyAndPasteNode = (
 	reactFlowWrapper: HTMLDivElement
 ) => {
 	const { nodes, setNodes } = useWorkflowStore();
+	const toast = useToast();
 
 	const mousePosition = useRef({ x: 0, y: 0 });
-
-	const [nodeClickedOn, setNodeClickedOn] = useState<Node | null>(null);
-	const nodeClickedOnDOM = useRef<Element | null>(null);
-
-	const onNodeClick: NodeMouseHandler = (event, node) => {
-		const nodes = document.getElementsByClassName("react-flow__node");
-		let nodeContainingClick;
-		for (let i = 0; i < nodes.length; i++) {
-			// @ts-expect-error event.target is a valid operand for .contains
-			if (nodes[i].contains(event.target)) nodeContainingClick = nodes[i];
-		}
-
-		nodeClickedOnDOM.current = nodeContainingClick || null;
-		// Start and response nodes can't be copied.
-		if (node.type === "start" || node.type === "response") return;
-		setNodeClickedOn(node);
-	};
 
 	const paste = useCallback(
 		async (event: ClipboardEvent) => {
@@ -56,8 +41,6 @@ const useCopyAndPasteNode = (
 						id: newNodeId,
 					};
 					setNodes([...nodes, newNode]);
-
-					setNodeClickedOn(null);
 				}
 			} catch {
 				// noop
@@ -67,21 +50,15 @@ const useCopyAndPasteNode = (
 	);
 
 	const copy = useCallback(
-		async (event: ClipboardEvent) => {
-			const nodeIsFocused = document.activeElement === nodeClickedOnDOM.current;
-			if (nodeIsFocused) {
-				event.preventDefault();
-				const nodeId =
-					nodeClickedOn?.id ||
-					nodeClickedOnDOM.current?.getAttribute("data-id");
+		async (nodeId: string) => {
+			if (!nodeId) return;
 
-				if (!nodeId) return;
+			const nodeCopied = nodes.find((node) => node.id === nodeId);
+			await navigator.clipboard.writeText(JSON.stringify({ nodeCopied }));
 
-				const nodeCopied = nodes.find((node) => node.id === nodeId);
-				await navigator.clipboard.writeText(JSON.stringify({ nodeCopied }));
-			}
+			toast({ title: "Node Copied. Use Ctrl + V to paste", status: "info" });
 		},
-		[nodeClickedOn, nodes]
+		[nodes, toast]
 	);
 
 	useEffect(() => {
@@ -89,17 +66,15 @@ const useCopyAndPasteNode = (
 			mousePosition.current = { x: event.pageX, y: event.pageY };
 		};
 
-		window.addEventListener("copy", copy);
 		window.addEventListener("paste", paste);
 		window.addEventListener("mousemove", onMouseMove);
 		return () => {
-			window.removeEventListener("copy", copy);
 			window.removeEventListener("paste", paste);
 			window.removeEventListener("mousemove", onMouseMove);
 		};
-	}, [paste, copy, nodeClickedOn]);
+	}, [paste, copy]);
 
-	return { onNodeClick };
+	return { copy };
 };
 
 export default useCopyAndPasteNode;
