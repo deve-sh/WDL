@@ -21,9 +21,15 @@ const recursivelyCreateWorkflowTemplate = (
 		steps: [],
 	};
 
+	const getFieldFromNodeMetadata = (field: string) => {
+		return currentNode.data ? currentNode.data[field] : null;
+	};
+
 	if (
 		template.steps.find(
-			(step) => step.id === (currentNode.data.userEnteredId || currentNode.id)
+			(step) =>
+				step.id ===
+				(getFieldFromNodeMetadata("userEnteredId") || currentNode.id)
 		)
 	)
 		// Already added this block to our list of steps
@@ -32,10 +38,13 @@ const recursivelyCreateWorkflowTemplate = (
 	let block: WorkflowDefinitionSchema["steps"][number];
 
 	const commonBlockInputs = {
-		name: currentNode.data.stepName || "",
-		heading: currentNode.data.heading || "",
-		description: currentNode.data.description || "",
-		id: currentNode.data.userEnteredId || currentNode.data.id || currentNode.id,
+		name: getFieldFromNodeMetadata("stepName") || "",
+		heading: getFieldFromNodeMetadata("heading") || "",
+		description: getFieldFromNodeMetadata("description") || "",
+		id:
+			getFieldFromNodeMetadata("userEnteredId") ||
+			getFieldFromNodeMetadata("id") ||
+			currentNode.id,
 	};
 
 	const edgesForThisBlock = getEdgesForNode(currentNode, edges);
@@ -57,7 +66,7 @@ const recursivelyCreateWorkflowTemplate = (
 			block = {
 				...commonBlockInputs,
 				type: "condition",
-				condition: currentNode.data.condition || "",
+				condition: getFieldFromNodeMetadata("condition") || "",
 				onTrue: { targetStep: onTrueNode ? onTrueNode.target : "" },
 				onFalse: { targetStep: onFalseNode ? onFalseNode.target : "" },
 			};
@@ -85,7 +94,7 @@ const recursivelyCreateWorkflowTemplate = (
 			block = {
 				...commonBlockInputs,
 				type: "evaluation",
-				expression: currentNode.data.expression || "",
+				expression: getFieldFromNodeMetadata("expression") || "",
 				onComplete: { targetStep: onCompleteEdge.target },
 			};
 	}
@@ -101,8 +110,8 @@ const recursivelyCreateWorkflowTemplate = (
 			requestHeaders = {};
 
 		try {
-			requestBody = JSON.parse(currentNode.data?.body || "{}");
-			requestHeaders = JSON.parse(currentNode.data?.headers || "{}");
+			requestBody = JSON.parse(getFieldFromNodeMetadata("body") || "{}");
+			requestHeaders = JSON.parse(getFieldFromNodeMetadata("headers") || "{}");
 		} catch {
 			//
 		}
@@ -117,8 +126,9 @@ const recursivelyCreateWorkflowTemplate = (
 				type: "request-or-resolver",
 				action: {
 					type: "request",
-					endpoint: currentNode.data?.endpoint || "",
+					endpoint: getFieldFromNodeMetadata("endpoint") || "",
 					body: requestBody || {},
+					method: getFieldFromNodeMetadata("method") || "GET",
 					headers: requestHeaders || {},
 					onSuccess: { targetStep: onSuccessEdge?.target || "" },
 					onError: { targetStep: onErrorEdge?.target || "" },

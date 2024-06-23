@@ -6,6 +6,7 @@ import useWorkflowStore from "../../store";
 
 import CodeEditor from "../../../../components/CodeEditor";
 import useGetAndSetMetadata from "./use-get-and-set-block-metadata";
+import CommonMetadataForm from "./CommonMetadataEditor";
 
 const RequestBlockOptions = () => {
 	const { isEditable } = useWorkflowStore();
@@ -17,7 +18,7 @@ const RequestBlockOptions = () => {
 	};
 
 	const onMethodChange = (event: ChangeEvent<HTMLSelectElement>) => {
-		setMetadata({ ...metadata, requestMethod: event.target.value });
+		setMetadata({ ...metadata, method: event.target.value });
 	};
 
 	const onBodyChange = (body: string) => {
@@ -29,7 +30,7 @@ const RequestBlockOptions = () => {
 	};
 
 	return (
-		<VStack gap="1rem" marginBottom="5">
+		<VStack gap="1rem">
 			<FormControl>
 				<FormLabel>Request URL</FormLabel>
 				<CodeEditor
@@ -43,15 +44,15 @@ const RequestBlockOptions = () => {
 			<FormControl>
 				<FormLabel>Request Method</FormLabel>
 				<Select
-					value={metadata["method"] || "get"}
+					value={metadata["method"] || "GET"}
 					onChange={onMethodChange}
 					disabled={!isEditable}
 				>
-					<option value="get">GET</option>
-					<option value="post">POST</option>
-					<option value="put">PUT</option>
-					<option value="patch">PATCH</option>
-					<option value="delete">DELETE</option>
+					<option value="GET">GET</option>
+					<option value="POST">POST</option>
+					<option value="PUT">PUT</option>
+					<option value="PATCH">PATCH</option>
+					<option value="DELETE">DELETE</option>
 				</Select>
 			</FormControl>
 			<FormControl>
@@ -74,6 +75,7 @@ const RequestBlockOptions = () => {
 					disabled={!isEditable}
 				/>
 			</FormControl>
+			<CommonMetadataForm metadata={metadata} setMetadata={setMetadata} />
 		</VStack>
 	);
 };

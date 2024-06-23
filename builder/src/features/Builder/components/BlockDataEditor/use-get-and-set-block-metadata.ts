@@ -11,7 +11,7 @@ const useGetAndSetMetadata = () => {
 		return nodes.find((node) => node.id === editingMetadataFor)?.data || {};
 	}, []);
 
-	const _metadata = useRef(null);
+	const _metadata = useRef(metadataToStartWith);
 	const [metadata, setMetadata] = useState(metadataToStartWith);
 
 	const updateMetadata = useCallback((updates: typeof metadata) => {
