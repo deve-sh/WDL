@@ -10,21 +10,29 @@ import ReactFlow, {
 
 import "reactflow/dist/style.css";
 
+import BlockDataEditor from "./components/BlockDataEditor";
+
 import nodeTypes from "./blocks/node-types";
 
 import useWorkflowStore from "./store";
 import useDragAndDrop from "./hooks/use-drag-and-drop";
 import useCopyAndPasteNode from "./hooks/use-copy-and-paste-node";
 
-import './builder-styles.css';
+import "./builder-styles.css";
 
 type Props = {
 	readOnly?: boolean;
 };
 
 function Builder({ readOnly }: Props) {
-	const { nodes, edges, onNodesChange, onEdgesChange, onConnect } =
-		useWorkflowStore();
+	const {
+		nodes,
+		edges,
+		editingMetadataFor,
+		onNodesChange,
+		onEdgesChange,
+		onConnect,
+	} = useWorkflowStore();
 
 	const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
 	const [reactFlowInstance, setReactFlowInstance] =
@@ -87,6 +95,8 @@ function Builder({ readOnly }: Props) {
 				/>
 				<MiniMap position="top-right" />
 			</ReactFlow>
+
+			{!!editingMetadataFor && <BlockDataEditor />}
 		</ReactFlowProvider>
 	);
 }

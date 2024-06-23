@@ -30,6 +30,8 @@ type WorkflowBuilderState = {
 	setIsDirty: (isDirty: boolean) => void;
 	isEditable: boolean;
 	setIsEditable: (isEditable: boolean) => void;
+	editingMetadataFor: string | null;
+	setEditingMetadataFor: (nodeId: string | null) => void;
 };
 
 export const workflowStore = createStore(
@@ -39,7 +41,8 @@ export const workflowStore = createStore(
 			edges: [],
 			loading: false,
 			isDirty: false,
-			isEditable: false,
+			isEditable: true,
+			editingMetadataFor: "",
 			onNodesChange: (changes: NodeChange[]) => {
 				set({
 					nodes: applyNodeChanges(changes, get().nodes),
@@ -69,6 +72,7 @@ export const workflowStore = createStore(
 				if (get().isEditable) set({ isDirty });
 			},
 			setIsEditable: (isEditable) => set({ isEditable }),
+			setEditingMetadataFor: (nodeId) => set({ editingMetadataFor: nodeId }),
 		}),
 		{
 			name: "workflow-builder-core-store-persistor-layer",

@@ -25,6 +25,7 @@ interface Props {
 	language: "json" | "js";
 	placeholder?: string;
 	disabled?: boolean;
+	multiLine?: boolean;
 }
 
 const StyledEditor = styled(Editor)`
