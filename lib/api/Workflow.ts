@@ -204,13 +204,17 @@ class Workflow {
 		let validationErrors: string[] = [];
 
 		for (let validation of validations) {
-			const outputOfEvaluation = processConditional(validation.condition, {
+			const variables = {
 				...this.generateVariablesForInterpolation(),
 				steps: {
-					...this.generateVariablesForInterpolation(),
+					...this.generateVariablesForInterpolation().steps,
 					[(step as WorkflowStep).id]: { inputs },
 				},
-			});
+			};
+			const outputOfEvaluation = processConditional(
+				parseAndResolveTemplateString(validation.condition, variables),
+				variables
+			);
 			if (!outputOfEvaluation) {
 				passedAllValidations = false;
 				validationErrors.push(validation.errorMessage);
@@ -276,9 +280,10 @@ class Workflow {
 			step.onTrue &&
 			step.onFalse
 		) {
+			const variables = this.generateVariablesForInterpolation();
 			const result = processConditional(
-				step.condition,
-				this.generateVariablesForInterpolation()
+				parseAndResolveTemplateString(step.condition, variables),
+				variables
 			);
 
 			if (result) return this.goToStep(step.onTrue.targetStep, { result });
@@ -286,9 +291,10 @@ class Workflow {
 		}
 
 		if (step.type === "evaluation" && step.expression && step.onComplete) {
+			const variables = this.generateVariablesForInterpolation();
 			const result = processEvaluation(
-				step.expression,
-				this.generateVariablesForInterpolation()
+				parseAndResolveTemplateString(step.expression, variables),
+				variables
 			);
 
 			return this.goToStep(step.onComplete.targetStep, { result });
