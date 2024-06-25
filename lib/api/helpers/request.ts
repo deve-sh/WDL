@@ -28,11 +28,14 @@ export default async function request(
 			fetcher = (await import("isomorphic-fetch")).default;
 		else fetcher = window.fetch;
 
-		response = await fetcher(args.endpoint, {
-			method: args.method || "get",
-			headers: headers,
-			body: body,
-		});
+		response = await fetcher(
+			parseAndResolveTemplateString(args.endpoint, variables),
+			{
+				method: args.method || "get",
+				headers: headers,
+				body: body,
+			}
+		);
 		if (!response.ok) failed = true;
 		response = await response.json();
 	} catch (error: Error | unknown) {
