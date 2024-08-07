@@ -58,13 +58,23 @@ export const workflowStore = createStore(
 			onConnect: (connection: Connection) => {
 				if (connection.source === connection.target) return;
 
-				const existingEdgeFromHandle = get().edges.find(
-					(edge) =>
-						edge.source === connection.source &&
-						edge.sourceHandle === connection.sourceHandle
+				const sourceNode = get().nodes.find(
+					(node) => node.id === connection.source
 				);
 
-				if (existingEdgeFromHandle) return;
+				if (!sourceNode) return;
+
+				if (sourceNode.type !== "resolver") {
+					// A resolver type can plug into as many nodes as it wants as there's no defined flow of use.
+
+					const existingEdgeFromHandle = get().edges.find(
+						(edge) =>
+							edge.source === connection.source &&
+							edge.sourceHandle === connection.sourceHandle
+					);
+
+					if (existingEdgeFromHandle) return;
+				}
 
 				set({
 					edges: addEdge(
