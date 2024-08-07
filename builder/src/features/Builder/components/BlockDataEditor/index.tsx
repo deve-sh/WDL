@@ -16,6 +16,7 @@ import RequestBlockOptions from "./RequestBlock";
 import IfElseBlockOptions from "./IfElseBlock";
 import EvaluateBlockOptions from "./EvaluateBlock";
 import ResolverBlockOptions from "./ResolverBlock";
+import InteractiveStepOptions from "./InteractiveStep";
 
 const BlockDataEditor = () => {
 	const { nodes, editingMetadataFor, setEditingMetadataFor } =
@@ -35,11 +36,12 @@ const BlockDataEditor = () => {
 			<ModalContent>
 				<ModalHeader>Edit Workflow Block</ModalHeader>
 				<ModalCloseButton />
-				<ModalBody>
+				<ModalBody py={0}>
 					{node?.type === "request" && <RequestBlockOptions />}
 					{node?.type === "if-else" && <IfElseBlockOptions />}
 					{node?.type === "evaluate" && <EvaluateBlockOptions />}
 					{node?.type === "resolver" && <ResolverBlockOptions />}
+					{node?.type === "interactive-input" && <InteractiveStepOptions />}
 				</ModalBody>
 
 				<ModalFooter>
