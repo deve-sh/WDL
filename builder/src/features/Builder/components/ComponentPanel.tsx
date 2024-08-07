@@ -31,7 +31,7 @@ const ComponentPanel = () => {
 	const blocks = useMemo(
 		() => [
 			{ type: "start", label: "Start", disabled: shouldHideStartBlockCreator },
-			{ type: "interactive-input", label: "Interactive User Inputs" },
+			{ type: "interactive-input", label: "Interactive Step" },
 			{ type: "request", label: "Make A Request" },
 			{ type: "resolver", label: "Resolver / Manual Step" },
 			{ type: "evaluate", label: "Evaluate Expression" },

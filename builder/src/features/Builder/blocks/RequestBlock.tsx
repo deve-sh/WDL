@@ -1,13 +1,14 @@
 import React from "react";
 import { Handle, Position } from "reactflow";
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 
 import CommonNodeWrapper from "./CommonNodeWrapper";
+import BlockFace from "./BlockFace";
 
 const RequestBlock = React.memo(() => {
 	return (
 		<CommonNodeWrapper>
-			<Text>Send A Request</Text>
+			<BlockFace nodePrimaryLabel="Send A Request" />
 			<Handle type="target" position={Position.Top} />
 			<Flex>
 				<div

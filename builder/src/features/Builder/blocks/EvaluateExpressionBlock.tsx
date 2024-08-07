@@ -1,13 +1,13 @@
 import React from "react";
 import { Handle, Position } from "reactflow";
-import { Text } from "@chakra-ui/react";
 
 import CommonNodeWrapper from "./CommonNodeWrapper";
+import BlockFace from "./BlockFace";
 
 const EvaluateExpressionBlock = React.memo(() => {
 	return (
 		<CommonNodeWrapper>
-			<Text>Evaluate Expression</Text>
+			<BlockFace nodePrimaryLabel="Evaluate Expression" />
 			<Handle type="target" position={Position.Top} />
 			<Handle type="source" position={Position.Bottom} />
 		</CommonNodeWrapper>

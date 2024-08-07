@@ -1,13 +1,13 @@
 import React from "react";
 import { Handle, Position } from "reactflow";
-import { Text } from "@chakra-ui/react";
 
 import CommonNodeWrapper from "./CommonNodeWrapper";
+import BlockFace from "./BlockFace";
 
 const ResolverBlock = React.memo(() => {
 	return (
 		<CommonNodeWrapper>
-			<Text>Resolver</Text>
+			<BlockFace nodePrimaryLabel="Resolver" />
 			<Handle type="target" position={Position.Top} />
 			<Handle type="source" position={Position.Bottom} />
 		</CommonNodeWrapper>

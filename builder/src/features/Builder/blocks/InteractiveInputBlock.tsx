@@ -1,13 +1,13 @@
 import React from "react";
 import { Handle, Position } from "reactflow";
-import { Text } from "@chakra-ui/react";
 
 import CommonNodeWrapper from "./CommonNodeWrapper";
+import BlockFace from "./BlockFace";
 
 const InteractiveInputStep = React.memo(() => {
 	return (
 		<CommonNodeWrapper>
-			<Text>Interactive User Inputs</Text>
+			<BlockFace nodePrimaryLabel="Interactive Step" />
 			<Handle type="target" position={Position.Top} />
 			<Handle type="source" position={Position.Bottom} />
 		</CommonNodeWrapper>
