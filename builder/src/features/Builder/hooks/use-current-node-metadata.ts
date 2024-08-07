@@ -1,15 +1,33 @@
-import { useNodeId } from "reactflow";
+import { useCallback, useMemo } from "react";
+import { type Node, useNodeId } from "reactflow";
+
 import useWorkflowStore from "../store";
-import { useMemo } from "react";
 
 const useCurrentNodeMetadata = () => {
-	const { nodes } = useWorkflowStore();
+	const { nodes, setNodes } = useWorkflowStore();
 
 	const nodeId = useNodeId();
 
-	const node = useMemo(() => nodes.find((node) => node.id === nodeId), [nodes, nodeId]);
+	const node = useMemo(
+		() => nodes.find((node) => node.id === nodeId),
+		[nodes, nodeId]
+	);
 
-	return node ? node.data : {};
+	const setMetadata = useCallback(
+		(newMetadata: Node["data"]) => {
+			if (!node) return;
+			setNodes(
+				nodes.map((existingNode) =>
+					existingNode.id === node.id
+						? { ...existingNode, data: newMetadata }
+						: existingNode
+				)
+			);
+		},
+		[nodes, setNodes, node]
+	);
+
+	return [node ? node.data : {}, setMetadata];
 };
 
 export default useCurrentNodeMetadata;

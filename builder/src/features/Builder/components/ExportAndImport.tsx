@@ -13,7 +13,7 @@ const ExportAndImport = () => {
 	const fileUploadInputRef = useRef<HTMLInputElement | null>(null);
 
 	return (
-		<HStack gap="1rem" justifyContent="center">
+		<HStack gap="0.25rem" justifyContent="center">
 			<Button
 				colorScheme="teal"
 				leftIcon={<MdDownload />}

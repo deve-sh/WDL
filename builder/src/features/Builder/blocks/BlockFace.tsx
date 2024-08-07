@@ -3,7 +3,7 @@ import { Box, Text, Tooltip } from "@chakra-ui/react";
 import useCurrentNodeMetadata from "../hooks/use-current-node-metadata";
 
 const BlockFace = ({ nodePrimaryLabel }: { nodePrimaryLabel: string }) => {
-	const nodeMetadata = useCurrentNodeMetadata();
+	const [nodeMetadata] = useCurrentNodeMetadata();
 
 	return nodeMetadata?.name ? (
 		<Box textAlign="center">
@@ -23,7 +23,7 @@ const BlockFace = ({ nodePrimaryLabel }: { nodePrimaryLabel: string }) => {
 			<Text fontSize="xs">({nodePrimaryLabel})</Text>
 		</Box>
 	) : (
-		<Text>{nodePrimaryLabel}</Text>
+		<Text textAlign="center">{nodePrimaryLabel}</Text>
 	);
 };
 
