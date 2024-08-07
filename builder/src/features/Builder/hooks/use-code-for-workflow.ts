@@ -92,8 +92,8 @@ const recursivelyCreateWorkflowTemplate = (
 		block = {
 			...commonBlockInputs,
 			type: "interactive-step",
-			actions: [],
-			inputs: [],
+			actions: currentNode.data.actions ? currentNode.data.actions : [],
+			blocks: currentNode.data.blocks ? currentNode.data.blocks : [],
 		};
 	}
 	if (currentNode.type === "resolver") {
