@@ -8,8 +8,9 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 			id: "enterPhoneNumberStep",
 			name: "Phone Number Entering Step",
 			heading: "Enter Your Phone Number",
-			inputs: [
+			blocks: [
 				{
+					type: 'input',
 					attributes: {
 						type: "tel",
 						label: "Enter your phone number",
