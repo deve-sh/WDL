@@ -1,6 +1,5 @@
 import type { InteractiveWorkflowStep } from "./InteractiveWorkflowStep";
 import type { RequestOrResolverWorkflowStep } from "./RequestOrResolverWorkflowStep";
-
 import type { WorkflowStepResolver } from "./Resolver";
 import type { WorkflowCurrentState } from "./WorkflowCurrentState";
 import type { RedirectionWorkflowStep } from "./RedirectWorkflowStep";
@@ -35,4 +34,12 @@ export type WorkflowInitOptions = {
 	};
 };
 
-export { WorkflowCurrentState, WorkflowStepResolver };
+export {
+	WorkflowCurrentState,
+	WorkflowStepResolver,
+	InteractiveWorkflowStep,
+	RequestOrResolverWorkflowStep,
+	RedirectionWorkflowStep,
+	ConditionalWorkflowStep,
+	EvaluationWorkflowStep,
+};
