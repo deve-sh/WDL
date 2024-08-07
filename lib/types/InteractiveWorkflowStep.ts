@@ -7,7 +7,7 @@ export type InteractiveWorkflowStepInputs = {
 		placeholder?: string;
 		defaultValue?: string;
 		options?: any[];
-	};
+	} & Record<string, any>; // Any other attributes
 	id: string;
 };
 
@@ -23,7 +23,7 @@ export type InteractiveWorkflowStepActions = {
 		primary?: boolean;
 		type?: string;
 		label: string;
-	};
+	} & Record<string, any>; // Any other attributes
 	validations?: { condition: string; errorMessage: string }[];
 	onValidationSuccess: { targetStep: string };
 	onValidationError?: { targetStep: string };
