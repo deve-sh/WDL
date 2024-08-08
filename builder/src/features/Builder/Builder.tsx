@@ -14,11 +14,12 @@ import ReactFlow, {
 	ReactFlowInstance,
 	MiniMap,
 	type NodeMouseHandler,
+	ControlButton,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
 
-import { MdCopyAll } from "react-icons/md";
+import { MdCopyAll, MdUpload } from "react-icons/md";
 import { IoMdTrash } from "react-icons/io";
 
 import BlockDataEditor from "./components/BlockDataEditor";
@@ -161,11 +162,7 @@ function Builder({ readOnly }: Props) {
 				nodesDraggable
 			>
 				<Background />
-				<Controls
-					position="bottom-left"
-					showInteractive={false}
-					showZoom={false}
-				/>
+				<Controls position="bottom-left" showInteractive={false} />
 				<MiniMap position="top-right" />
 			</ReactFlow>
 
