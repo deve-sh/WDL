@@ -1,8 +1,11 @@
-import React, { MouseEvent, useCallback } from "react";
+import React, { MouseEvent, useCallback, useState } from "react";
 import { MdAdd } from "react-icons/md";
 import { Handle, Position } from "reactflow";
 import {
 	Divider,
+	Flex,
+	IconButton,
+	Select,
 	Tag,
 	TagCloseButton,
 	TagLabel,
@@ -40,14 +43,28 @@ const baseInputObject = {
 	id: "",
 };
 
+type WorkflowStepRepresentationBlockType =
+	InteractiveWorkflowStep["blocks"][number]["type"];
+const blockTypes: WorkflowStepRepresentationBlockType[] = [
+	"input",
+	"text",
+	"heading",
+	"image",
+	"line-break",
+	"misc",
+];
+
 const InteractiveInputStep = React.memo(() => {
 	const { edges, setEdges } = useWorkflowStore();
 	const [nodeMetadata, setNodeMetadata] = useCurrentNodeMetadata();
 
+	const [activeNewBlockType, setActiveNewBlockType] =
+		useState<WorkflowStepRepresentationBlockType>(blockTypes[0]);
+
 	const onAddNewBlockToStep = useCallback(
 		(
 			event: MouseEvent<HTMLSpanElement>,
-			type: InteractiveWorkflowStep["blocks"][number]["type"]
+			type: WorkflowStepRepresentationBlockType
 		) => {
 			event.stopPropagation();
 
@@ -125,14 +142,37 @@ const InteractiveInputStep = React.memo(() => {
 						</Tag>
 					))}
 
-				<Tag
-					onClick={(e) => onAddNewBlockToStep(e, "input")}
-					width="100%"
-					mt="2"
+				<Flex
+					gap="0.5rem"
+					alignItems="center"
+					onClick={(e) => e.stopPropagation()}
 				>
-					<TagLeftIcon as={MdAdd} />
-					<TagLabel>New Block</TagLabel>
-				</Tag>
+					<Select
+						onChange={(e) =>
+							setActiveNewBlockType(
+								e.target.value as WorkflowStepRepresentationBlockType
+							)
+						}
+						value={activeNewBlockType}
+						size="xs"
+						variant="outline"
+						borderRadius="4"
+					>
+						{blockTypes.map((type) => (
+							<option key={type} value={type}>
+								{type}
+							</option>
+						))}
+					</Select>
+					<IconButton
+						aria-label="Add New Block"
+						size="xs"
+						variant="outline"
+						onClick={(e) => onAddNewBlockToStep(e, activeNewBlockType)}
+					>
+						<MdAdd />
+					</IconButton>
+				</Flex>
 			</VStack>
 
 			<Divider my={4} />
