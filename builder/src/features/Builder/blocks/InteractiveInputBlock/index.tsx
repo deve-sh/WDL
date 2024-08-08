@@ -17,11 +17,12 @@ import { v4 } from "uuid";
 
 import type { InteractiveWorkflowStep } from "wdl";
 
-import CommonNodeWrapper from "./CommonNodeWrapper";
-import BlockFace from "./BlockFace";
+import CommonNodeWrapper from "../CommonNodeWrapper";
+import BlockFace from "../BlockFace";
 
-import useWorkflowStore from "../store";
-import useCurrentNodeMetadata from "../hooks/use-current-node-metadata";
+import useWorkflowStore from "../../store";
+import useCurrentNodeMetadata from "../../hooks/use-current-node-metadata";
+import BlockEditor from "./BlockEditor";
 
 const baseActionObject = {
 	id: "",
@@ -33,7 +34,7 @@ const baseActionObject = {
 	onValidationError: { targetStep: null },
 };
 
-const baseInputObject = {
+const baseInputObject: InteractiveWorkflowStep["blocks"][number] = {
 	type: "input",
 	attributes: {
 		type: "text",
@@ -61,6 +62,8 @@ const InteractiveInputStep = React.memo(() => {
 	const [activeNewBlockType, setActiveNewBlockType] =
 		useState<WorkflowStepRepresentationBlockType>(blockTypes[0]);
 
+	const [editingBlock, setEditingBlock] = useState<string | null>(null);
+
 	const onAddNewBlockToStep = useCallback(
 		(
 			event: MouseEvent<HTMLSpanElement>,
@@ -70,8 +73,9 @@ const InteractiveInputStep = React.memo(() => {
 
 			let nodeObject;
 
-			if (type === "input") nodeObject = baseInputObject;
-			else nodeObject = { type, data: "" };
+			if (type === "input")
+				nodeObject = { ...baseInputObject, internalId: v4(), id: v4() };
+			else nodeObject = { type, internalId: v4(), id: v4(), data: "" };
 
 			setNodeMetadata({
 				...nodeMetadata,
@@ -122,6 +126,23 @@ const InteractiveInputStep = React.memo(() => {
 		[setNodeMetadata, nodeMetadata, setEdges, edges]
 	);
 
+	const onCompleteEditBlock = useCallback(
+		(newBlock: InteractiveWorkflowStep["blocks"][number]) => {
+			if (!editingBlock || !nodeMetadata.blocks || !nodeMetadata.blocks.length)
+				return;
+
+			setNodeMetadata({
+				...nodeMetadata,
+				blocks: nodeMetadata.blocks.map((block: { internalId: string }) =>
+					block.internalId === editingBlock ? newBlock : block
+				),
+			});
+			
+			setEditingBlock(null);
+		},
+		[editingBlock, nodeMetadata, setNodeMetadata]
+	);
+
 	return (
 		<CommonNodeWrapper>
 			<Handle type="target" position={Position.Top} />
@@ -130,17 +151,34 @@ const InteractiveInputStep = React.memo(() => {
 
 			<VStack gap="2" mt="2">
 				{!!nodeMetadata.blocks?.length &&
-					nodeMetadata.blocks.map((block: { type: string }, index: number) => (
-						<Tag key={index} variant="outline">
-							<TagLabel textTransform="capitalize">{block.type} Block</TagLabel>
-							<TagCloseButton
+					nodeMetadata.blocks.map(
+						(
+							block: {
+								type: WorkflowStepRepresentationBlockType;
+								internalId: string;
+							},
+							index: number
+						) => (
+							<Tag
+								key={index}
+								variant="outline"
 								onClick={(e) => {
 									e.stopPropagation();
-									onRemoveBlockFromStep(index);
+									setEditingBlock(block.internalId);
 								}}
-							/>
-						</Tag>
-					))}
+							>
+								<TagLabel textTransform="capitalize">
+									{block.type} Block
+								</TagLabel>
+								<TagCloseButton
+									onClick={(e) => {
+										e.stopPropagation();
+										onRemoveBlockFromStep(index);
+									}}
+								/>
+							</Tag>
+						)
+					)}
 
 				<Flex
 					gap="0.5rem"
@@ -204,6 +242,15 @@ const InteractiveInputStep = React.memo(() => {
 					<TagLabel>New Action</TagLabel>
 				</Tag>
 			</VStack>
+
+			{!!editingBlock && (
+				<BlockEditor
+					onComplete={onCompleteEditBlock}
+					initInputs={nodeMetadata.blocks.find(
+						(block: { internalId: string }) => block.internalId === editingBlock
+					)}
+				/>
+			)}
 		</CommonNodeWrapper>
 	);
 });
