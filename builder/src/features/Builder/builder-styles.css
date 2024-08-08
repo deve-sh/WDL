@@ -10,10 +10,6 @@
 	border-color: #333333;
 }
 
-.react-flow__edges.react-flow__container {
-	z-index: 1;
-}
-
-.react-flow__edges.react-flow__container svg {
-	z-index: 5;
+.react-flow__node {
+	z-index: -1 !important;
 }

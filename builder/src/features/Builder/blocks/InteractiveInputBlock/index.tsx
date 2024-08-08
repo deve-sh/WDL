@@ -22,7 +22,9 @@ import BlockFace from "../BlockFace";
 
 import useWorkflowStore from "../../store";
 import useCurrentNodeMetadata from "../../hooks/use-current-node-metadata";
+
 import BlockEditor from "./BlockEditor";
+import ActionEditor from "./ActionEditor";
 
 const baseActionObject = {
 	id: "",
@@ -63,6 +65,7 @@ const InteractiveInputStep = React.memo(() => {
 		useState<WorkflowStepRepresentationBlockType>(blockTypes[0]);
 
 	const [editingBlock, setEditingBlock] = useState<string | null>(null);
+	const [editingAction, setEditingAction] = useState<string | null>(null);
 
 	const onAddNewBlockToStep = useCallback(
 		(
@@ -141,6 +144,27 @@ const InteractiveInputStep = React.memo(() => {
 			setEditingBlock(null);
 		},
 		[editingBlock, nodeMetadata, setNodeMetadata]
+	);
+
+	const onCompleteEditAction = useCallback(
+		(updatedAction: InteractiveWorkflowStep["actions"][number]) => {
+			if (
+				!editingAction ||
+				!nodeMetadata.actions ||
+				!nodeMetadata.actions.length
+			)
+				return;
+
+			setNodeMetadata({
+				...nodeMetadata,
+				actions: nodeMetadata.actions.map((action: { internalId: string }) =>
+					action.internalId === editingAction ? updatedAction : action
+				),
+			});
+
+			setEditingAction(null);
+		},
+		[editingAction, nodeMetadata, setNodeMetadata]
 	);
 
 	return (
@@ -225,7 +249,14 @@ const InteractiveInputStep = React.memo(() => {
 				{!!nodeMetadata.actions?.length &&
 					nodeMetadata.actions.map(
 						(action: { internalId: string }, index: number) => (
-							<Tag variant="outline" position="relative">
+							<Tag
+								variant="outline"
+								position="relative"
+								onClick={(e) => {
+									e.stopPropagation();
+									setEditingAction(action.internalId);
+								}}
+							>
 								<TagLabel fontSize="0.5rem" textAlign="center" width="100%">
 									Action Button
 								</TagLabel>
@@ -266,6 +297,16 @@ const InteractiveInputStep = React.memo(() => {
 					onComplete={onCompleteEditBlock}
 					initInputs={nodeMetadata.blocks.find(
 						(block: { internalId: string }) => block.internalId === editingBlock
+					)}
+				/>
+			)}
+
+			{!!editingAction && (
+				<ActionEditor
+					onComplete={onCompleteEditAction}
+					initInputs={nodeMetadata.actions.find(
+						(action: { internalId: string }) =>
+							action.internalId === editingAction
 					)}
 				/>
 			)}

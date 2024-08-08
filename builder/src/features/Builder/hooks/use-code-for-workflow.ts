@@ -106,8 +106,13 @@ const recursivelyCreateWorkflowTemplate = (
 							return {
 								id: action.id,
 								type: action.type || "",
-								attributes: { label: "" },
-								validations: [{ condition: "", errorMessage: "" }],
+								attributes: { label: action.attributes?.label || "" },
+								validations: [
+									{
+										condition: action.validations?.[0]?.condition || "",
+										errorMessage: action.validations?.[0]?.errorMessage || "",
+									},
+								],
 								onValidationSuccess: {
 									targetStep: getUserEnteredIdOfNode(
 										onValidationSuccess?.target || ""
