@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { type WorkflowDefinitionSchema } from "wdl";
+import { InteractiveWorkflowStep, type WorkflowDefinitionSchema } from "wdl";
 import { type Edge, type Node, getOutgoers } from "reactflow";
 
 import {
@@ -92,8 +92,32 @@ const recursivelyCreateWorkflowTemplate = (
 		block = {
 			...commonBlockInputs,
 			type: "interactive-step",
-			actions: currentNode.data.actions ? currentNode.data.actions : [],
-			blocks: currentNode.data.blocks ? currentNode.data.blocks : [],
+			actions: currentNode.data.actions
+				? currentNode.data.actions.map(
+						(action: InteractiveWorkflowStep["actions"][number]) => {
+							return {
+								id: action.id,
+								type: action.type || "",
+								validations: [{ condition: "", errorMessage: "" }],
+								onValidationSuccess: { targetStep: "" },
+								onValidationError: { targetStep: "" },
+							};
+						}
+				  )
+				: [],
+			blocks: currentNode.data.blocks
+				? currentNode.data.blocks.map(
+						(block: InteractiveWorkflowStep["blocks"][number]) => {
+							if (block.type === "input")
+								return {
+									type: "input",
+									attributes: block.attributes,
+									id: block.id,
+								};
+							else return { type: block.type, data: block.data };
+						}
+				  )
+				: [],
 		};
 	}
 	if (currentNode.type === "resolver") {
