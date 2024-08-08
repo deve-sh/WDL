@@ -18,6 +18,9 @@ import ReactFlow, {
 
 import "reactflow/dist/style.css";
 
+import { MdCopyAll } from "react-icons/md";
+import { IoMdTrash } from "react-icons/io";
+
 import BlockDataEditor from "./components/BlockDataEditor";
 
 import nodeTypes from "./blocks/node-types";
@@ -28,7 +31,6 @@ import useCopyAndPasteNode from "./hooks/use-copy-and-paste-node";
 
 import "./builder-styles.css";
 import ContextMenu from "./components/NodeContextMenu";
-import { MdCopyAll } from "react-icons/md";
 
 type Props = {
 	readOnly?: boolean;
@@ -40,6 +42,8 @@ function Builder({ readOnly }: Props) {
 		edges,
 		editingMetadataFor,
 		isEditable,
+		setNodes,
+		setEdges,
 		setEditingMetadataFor,
 		onNodesChange,
 		onEdgesChange,
@@ -93,6 +97,16 @@ function Builder({ readOnly }: Props) {
 		});
 	}, []);
 
+	const deleteNode = useCallback(
+		(nodeId: string) => {
+			setNodes(nodes.filter((node) => node.id !== nodeId));
+			setEdges(
+				edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+			);
+		},
+		[setNodes, setEdges, nodes, edges]
+	);
+
 	const contextMenuActions = useMemo(
 		() => [
 			{
@@ -101,8 +115,14 @@ function Builder({ readOnly }: Props) {
 				onClick: () => copyNode(nodeContextMenuProps?.nodeId as string),
 				icon: <MdCopyAll />,
 			},
+			{
+				id: "delete",
+				text: "Delete",
+				onClick: () => deleteNode(nodeContextMenuProps?.nodeId as string),
+				icon: <IoMdTrash />,
+			},
 		],
-		[nodeContextMenuProps, copyNode]
+		[nodeContextMenuProps, copyNode, deleteNode]
 	);
 
 	const closeContextMenu = useCallback(() => {
