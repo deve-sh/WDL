@@ -34,13 +34,13 @@ const IfElseBlock = React.memo(() => {
 				type="source"
 				position={Position.Bottom}
 				id="onTrue"
-				style={{ left: "25%" }}
+				style={{ left: "25%", background: "green" }}
 			/>
 			<Handle
 				type="source"
 				id="onFalse"
 				position={Position.Bottom}
-				style={{ left: "75%" }}
+				style={{ left: "75%", background: "red" }}
 			/>
 		</CommonNodeWrapper>
 	);

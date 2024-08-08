@@ -95,12 +95,29 @@ const recursivelyCreateWorkflowTemplate = (
 			actions: currentNode.data.actions
 				? currentNode.data.actions.map(
 						(action: InteractiveWorkflowStep["actions"][number]) => {
+							const onValidationSuccess = edges.find((edge) =>
+								// @ts-expect-error Internal ID is for our reference
+								edge.sourceHandle?.includes(`${action.internalId}_success`)
+							);
+							const onValidationError = edges.find((edge) =>
+								// @ts-expect-error Internal ID is for our reference
+								edge.sourceHandle?.includes(`${action.internalId}_error`)
+							);
 							return {
 								id: action.id,
 								type: action.type || "",
+								attributes: { label: "" },
 								validations: [{ condition: "", errorMessage: "" }],
-								onValidationSuccess: { targetStep: "" },
-								onValidationError: { targetStep: "" },
+								onValidationSuccess: {
+									targetStep: getUserEnteredIdOfNode(
+										onValidationSuccess?.target || ""
+									),
+								},
+								onValidationError: {
+									targetStep: getUserEnteredIdOfNode(
+										onValidationError?.target || ""
+									),
+								},
 							};
 						}
 				  )

@@ -137,7 +137,7 @@ const InteractiveInputStep = React.memo(() => {
 					block.internalId === editingBlock ? newBlock : block
 				),
 			});
-			
+
 			setEditingBlock(null);
 		},
 		[editingBlock, nodeMetadata, setNodeMetadata]
@@ -167,10 +167,16 @@ const InteractiveInputStep = React.memo(() => {
 									setEditingBlock(block.internalId);
 								}}
 							>
-								<TagLabel textTransform="capitalize">
+								<TagLabel
+									fontSize="0.5rem"
+									textAlign="center"
+									width="100%"
+									textTransform="capitalize"
+								>
 									{block.type} Block
 								</TagLabel>
 								<TagCloseButton
+									fontSize="0.75rem"
 									onClick={(e) => {
 										e.stopPropagation();
 										onRemoveBlockFromStep(index);
@@ -219,10 +225,13 @@ const InteractiveInputStep = React.memo(() => {
 				{!!nodeMetadata.actions?.length &&
 					nodeMetadata.actions.map(
 						(action: { internalId: string }, index: number) => (
-							<Tag variant="outline">
-								<TagLabel>Action Button</TagLabel>
+							<Tag variant="outline" position="relative">
+								<TagLabel fontSize="0.5rem" textAlign="center" width="100%">
+									Action Button
+								</TagLabel>
 
 								<TagCloseButton
+									fontSize="0.75rem"
 									onClick={(e) => {
 										e.stopPropagation();
 										onRemoveActionFromStep(index);
@@ -230,7 +239,14 @@ const InteractiveInputStep = React.memo(() => {
 								/>
 								<Handle
 									type="source"
-									id={action.internalId}
+									id={`${action.internalId}_success`}
+									style={{ top: "25%", background: "green" }}
+									position={Position.Right}
+								/>
+								<Handle
+									type="source"
+									id={`${action.internalId}_error`}
+									style={{ top: "75%", background: "red" }}
 									position={Position.Right}
 								/>
 							</Tag>
@@ -239,7 +255,9 @@ const InteractiveInputStep = React.memo(() => {
 
 				<Tag onClick={onAddNewActionToStep} width="100%" mt="2">
 					<TagLeftIcon as={MdAdd} />
-					<TagLabel>New Action</TagLabel>
+					<TagLabel fontSize="0.5rem" textAlign="center" width="100%">
+						New Action
+					</TagLabel>
 				</Tag>
 			</VStack>
 

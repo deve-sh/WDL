@@ -9,3 +9,11 @@
 .react-flow__node:focus {
 	border-color: #333333;
 }
+
+.react-flow__edges.react-flow__container {
+	z-index: 1;
+}
+
+.react-flow__edges.react-flow__container svg {
+	z-index: 5;
+}
