@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import type { InteractiveWorkflowStep } from "wdl";
 
 import {
 	Modal,
@@ -32,7 +33,10 @@ const nodeTypesPropertyMap: Record<
 	Exclude<keyof typeof nodeTypes, "start" | "resolver">,
 	{ tagColor: string; icon: React.ReactElement }
 > = {
-	"interactive-input": { tagColor: "green", icon: <FaRegKeyboard size="1.5rem" /> },
+	"interactive-input": {
+		tagColor: "green",
+		icon: <FaRegKeyboard size="1.5rem" />,
+	},
 	"if-else": { tagColor: "orange", icon: <FaCodeBranch size="1.5rem" /> },
 	request: { tagColor: "teal", icon: <MdHttp size="1.5rem" /> },
 	evaluate: { tagColor: "red", icon: <LuFunctionSquare size="1.5rem" /> },
@@ -69,22 +73,28 @@ const VariableInjector = ({
 			).replace("-", "_");
 
 			if (node.type === "interactive-input") {
-				if (node.data && node.data.inputs && node.data.inputs.length) {
-					for (const input of node.data.inputs) {
+				if (node.data && node.data.blocks && node.data.blocks.length) {
+					const inputs = node.data.blocks.filter(
+						(block: InteractiveWorkflowStep["blocks"][number]) =>
+							block.type === "input"
+					);
+
+					for (const input of inputs) {
 						const inputResultExpression = `steps.${nodeId}.inputs.${input.id}`;
 						bits.push({
 							expression: inputResultExpression,
-							description: "Get input of a step",
+							description: "Get input value of a step",
 							type: node.type || "",
 						});
 					}
+				}
 
+				if (node.data && node.data.actions && node.data.actions.length)
 					bits.push({
 						expression: `steps.${nodeId}.validationErrors`,
 						description: "Get validation errors for step's actions",
 						type: node.type || "",
 					});
-				}
 			}
 
 			if (node.type === "request") {
@@ -160,7 +170,7 @@ const VariableInjector = ({
 									w="100%"
 									borderRadius="5px"
 									cursor="pointer"
-									_hover={{ background: "#fafafa", borderColor: 'teal' }}
+									_hover={{ background: "#fafafa", borderColor: "teal" }}
 									onClick={() => {
 										onChange(
 											`${value}${value.length ? " " : ""}{{${bit.expression}}}`
