@@ -14,12 +14,11 @@ import ReactFlow, {
 	ReactFlowInstance,
 	MiniMap,
 	type NodeMouseHandler,
-	ControlButton,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
 
-import { MdCopyAll, MdUpload } from "react-icons/md";
+import { MdCopyAll } from "react-icons/md";
 import { IoMdTrash } from "react-icons/io";
 
 import BlockDataEditor from "./components/BlockDataEditor";
