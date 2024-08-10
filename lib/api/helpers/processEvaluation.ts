@@ -3,18 +3,18 @@ const processEvaluation = (
 	variables: Record<string, any>
 ) => {
 	// TODO: Probably sanitize JS code? This is equivalent of an "eval" statement
-	let conditionExpressionToEvaluate = ``;
+	let expressionToEvaluate = ``;
 
 	const variableNames = Object.keys(variables || {});
 
 	for (const name of variableNames)
-		conditionExpressionToEvaluate += `const ${name} = ${JSON.stringify(
+		expressionToEvaluate += `const ${name} = ${JSON.stringify(
 			variables[name] || {}
 		)};\n`;
 
-	conditionExpressionToEvaluate += `${evaluationString}`;
+	expressionToEvaluate += `${evaluationString}`;
 
-	const evaluationFunction = new Function(conditionExpressionToEvaluate);
+	const evaluationFunction = new Function(expressionToEvaluate);
 	const outputOfEvaluation = evaluationFunction();
 
 	return outputOfEvaluation;
