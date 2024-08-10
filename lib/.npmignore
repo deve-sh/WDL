@@ -6,3 +6,4 @@ dist
 tests
 coverage
 jest.config.js
+docs
