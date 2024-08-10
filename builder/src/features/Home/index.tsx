@@ -6,14 +6,17 @@ import {
 	Divider,
 	Flex,
 	Heading,
+	HStack,
 	Image,
 	Link,
 	Text,
+	Tooltip,
 	VStack,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { IoBuild } from "react-icons/io5";
-import { ImNpm } from "react-icons/im";
+import { PiBookDuotone } from "react-icons/pi";
+import { FaGithub } from "react-icons/fa";
 
 import LoomVideo from "./LoomVideo";
 
@@ -24,20 +27,81 @@ import {
 
 const Home = () => (
 	<>
-		<Box bg="teal.500" h="10" borderRadius="100%" marginTop="-20px" />
+		<Box bg="teal.500" h="2" />
+		<Box
+			position="sticky"
+			top="0px"
+			as="header"
+			borderBottom="1px solid"
+			borderColor="gray.200"
+			background="inherit"
+			zIndex="1000"
+			paddingY="2"
+			boxShadow="sm"
+			backdropFilter="saturate(180%) blur(5px)"
+			backgroundColor="#f7fafc7f"
+		>
+			<HStack
+				width="1300px"
+				maxWidth="100%"
+				margin="0 auto"
+				padding="2"
+				alignItems="center"
+			>
+				<Box width="50%">
+					<Image
+						loading="lazy"
+						maxHeight="10"
+						src="/icon-large.png"
+						boxSize={{ lg: "32px", base: "32px" }}
+						alt="WDL"
+					/>
+				</Box>
+				<Flex
+					width="50%"
+					gap="1.5rem"
+					justifyContent="flex-end"
+					alignItems="center"
+					textAlign="right"
+				>
+					<Tooltip label="GitHub Repository">
+						<a
+							href="https://github.com/deve-sh/wdl"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<FaGithub size="1.75rem" />
+						</a>
+					</Tooltip>
+
+					<Tooltip label="Documentation">
+						<a
+							href="https://deveshk.notion.site/WDL-99267b4be99d41febf89b09ec4791e89"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<PiBookDuotone size="1.75rem" />
+						</a>
+					</Tooltip>
+				</Flex>
+			</HStack>
+		</Box>
 		<Box id="hero-section" maxW="1100px" p="4" w="100%" m="0 auto">
 			<VStack pt="16" pb="6" justifyContent="center">
-				<Image src="/icon-large.png" boxSize={{ lg: "175px", base: "100px" }} />
+				<Image
+					src="/icon-large.png"
+					boxSize={{ lg: "175px", base: "100px" }}
+					alt="WDL"
+				/>
 				<Heading fontSize="5xl">WDL</Heading>
 				<Text
 					fontSize="xl"
 					color="gray.500"
 					textAlign="center"
 					lineHeight="2rem"
-					maxWidth="500px"
+					maxWidth="650px"
 				>
-					A simple yet extensible + scalable state-machine based framework for
-					full-stack workflows.
+					A simple, extensible and scalable framework for full-stack workflows.
 				</Text>
 				<ButtonGroup mt="6">
 					<Button
@@ -52,17 +116,14 @@ const Home = () => (
 					<Button
 						size="lg"
 						p={{ lg: "8", base: "4" }}
-						colorScheme="red"
-						variant="outline"
-						leftIcon={<ImNpm />}
+						colorScheme="gray"
+						leftIcon={<PiBookDuotone />}
+						as="a"
+						href="https://deveshk.notion.site/WDL-99267b4be99d41febf89b09ec4791e89"
+						target="_blank"
+						rel="noopener noreferrer"
 					>
-						<Link
-							href="https://npmjs.com/wdl"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							Get Started
-						</Link>
+						Get Started
 					</Button>
 				</ButtonGroup>
 				<VStack gap="4" w="100%" mt="8">
