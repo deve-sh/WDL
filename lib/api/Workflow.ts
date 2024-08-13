@@ -212,7 +212,7 @@ class Workflow {
 				},
 			};
 			const outputOfEvaluation = processConditional(
-				parseAndResolveTemplateString(validation.condition, variables),
+				this.processTemplateString(validation.condition, variables),
 				variables
 			);
 			if (!outputOfEvaluation) {
@@ -282,7 +282,7 @@ class Workflow {
 		) {
 			const variables = this.generateVariablesForInterpolation();
 			const result = processConditional(
-				parseAndResolveTemplateString(step.condition, variables),
+				this.processTemplateString(step.condition),
 				variables
 			);
 
@@ -293,7 +293,7 @@ class Workflow {
 		if (step.type === "evaluation" && step.expression && step.onComplete) {
 			const variables = this.generateVariablesForInterpolation();
 			const result = processEvaluation(
-				parseAndResolveTemplateString(step.expression, variables),
+				this.processTemplateString(step.expression),
 				variables
 			);
 
@@ -329,16 +329,28 @@ class Workflow {
 			if (typeof window !== "undefined") {
 				// If this is being run on the client side, redirect the window
 				// For server-side actions just use a resolver.
-				return (window.location.href = parseAndResolveTemplateString(
-					step.url,
-					this.generateVariablesForInterpolation()
-				));
+				return (window.location.href = this.processTemplateString(step.url));
 			}
 		}
 
 		throw new Error(
 			"Workflow: Step " + step.id + " does not have a valid action or resolver"
 		);
+	}
+
+	/**
+	 * Evaluates and interpolates a string based on variables and metadata context/state of the workflow
+	 *
+	 * @param str String to evaluate
+	 * @param vars Option: Variables to use for the evaluation
+	 * @returns Evaluated-Interpolated string
+	 */
+	processTemplateString(
+		str: string,
+		vars?: Parameters<typeof parseAndResolveTemplateString>[1]
+	): string {
+		const variables = vars || this.generateVariablesForInterpolation();
+		return parseAndResolveTemplateString(str, variables);
 	}
 
 	// #Utils
