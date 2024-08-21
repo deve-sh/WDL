@@ -1,8 +1,8 @@
 export type RequestArgs = {
 	endpoint: string;
 	method?: string;
-	headers?: HeadersInit;
-	body?: Record<string, any>;
+	headers?: HeadersInit | string;
+	body?: Record<string, any> | string;
 };
 
 export type RequestAction = RequestArgs & {

@@ -11,16 +11,23 @@ export default async function request(
 	let response: Response | any = null;
 
 	try {
-		const headers = JSON.parse(
-			parseAndResolveTemplateString(
-				JSON.stringify({ "content-type": "application/json", ...args.headers }),
-				variables
-			)
-		);
-		const body = parseAndResolveTemplateString(
-			JSON.stringify(args.body),
-			variables
-		);
+		const headers =
+			typeof args.headers !== "string"
+				? JSON.parse(
+						parseAndResolveTemplateString(
+							JSON.stringify({
+								"content-type": "application/json",
+								...args.headers,
+							}),
+							variables
+						)
+				  )
+				: JSON.parse(parseAndResolveTemplateString(args.headers, variables));
+
+		const body =
+			typeof args.body !== "string"
+				? parseAndResolveTemplateString(JSON.stringify(args.body), variables)
+				: parseAndResolveTemplateString(args.body, variables);
 
 		let fetcher: Window["fetch"];
 

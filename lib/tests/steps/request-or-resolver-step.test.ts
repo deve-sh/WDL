@@ -1,4 +1,4 @@
-import { describe, expect, it } from "@jest/globals";
+import { beforeAll, describe, expect, it } from "@jest/globals";
 
 import type { WorkflowCurrentState } from "../../types";
 import type {
@@ -9,7 +9,31 @@ import type {
 import Workflow from "../../api";
 import workflowTemplate from "../mocks/sampleWorkflow";
 
+let mockRequestArgs: [url: string, options: Record<string, any>];
+
+const mockRequestResponse = {
+	ok: true,
+	status: 200,
+	message: "Response sent successfully",
+};
+
 describe("Tests for request/resolver steps", () => {
+	beforeAll(() => {
+		global.window = {
+			// @ts-expect-error Filling in a window mock for the server environment without an additional library
+			fetch: async (...args) => {
+				// @ts-expect-error
+				mockRequestArgs = args;
+
+				// Mock a success
+				return {
+					ok: true,
+					json: async () => mockRequestResponse,
+				};
+			},
+		};
+	});
+
 	it("should throw if a step doesn't have a resolver specified", async () => {
 		const workflow = new Workflow(workflowTemplate).loadCurrentState({
 			currentStep: "webhookStep",
@@ -47,28 +71,6 @@ describe("Tests for request/resolver steps", () => {
 	});
 
 	it("should make a request for a step with request action defined + move the request according to the success of it", async () => {
-		let requestArgs: [url: string, options: Record<string, any>];
-
-		const mockRequestResponse = {
-			ok: true,
-			status: 200,
-			message: "Response sent successfully",
-		};
-
-		global.window = {
-			// @ts-expect-error Filling in a window mock for the server environment without an additional library
-			fetch: async (...args) => {
-				// @ts-expect-error
-				requestArgs = args;
-
-				// Mock a success
-				return {
-					ok: true,
-					json: async () => mockRequestResponse,
-				};
-			},
-		};
-
 		const requestStepInWorkflowTemplate = workflowTemplate.steps.find(
 			(step) => step.id === "sendingOTPStage"
 		) as RequestOrResolverWorkflowStep;
@@ -88,8 +90,7 @@ describe("Tests for request/resolver steps", () => {
 
 		await workflow.processCurrentStep();
 
-		// @ts-expect-error The variable is assigned a value on execution.
-		const argsReceivedInRequest = requestArgs as typeof requestArgs;
+		const argsReceivedInRequest = mockRequestArgs as typeof mockRequestArgs;
 
 		expect(argsReceivedInRequest).toBeDefined();
 
@@ -112,5 +113,40 @@ describe("Tests for request/resolver steps", () => {
 		expect(currentState.metadata.sendingOTPStage.response).toMatchObject(
 			mockRequestResponse
 		);
+	});
+
+	it("should make a request for a step with request action defined + handle stringified body and header", async () => {
+		const requestStepInWorkflowTemplate = workflowTemplate.steps.find(
+			(step) => step.id === "sendingOTPStageWithStringifiedHeaderAndBody"
+		) as RequestOrResolverWorkflowStep;
+
+		if (!requestStepInWorkflowTemplate) return;
+
+		const workflow = new Workflow(workflowTemplate, {
+			environmentContext: { otpApiKey: "abcdef" },
+		}).loadCurrentState({
+			currentStep: "sendingOTPStageWithStringifiedHeaderAndBody",
+			metadata: {
+				general: {},
+				enterPhoneNumberStep: { inputs: { phoneNumber: 1234 } },
+			},
+			executionSequence: [],
+		});
+
+		await workflow.processCurrentStep();
+
+		const argsReceivedInRequest = mockRequestArgs as typeof mockRequestArgs;
+
+		expect(argsReceivedInRequest).toBeDefined();
+
+		const action = requestStepInWorkflowTemplate.action as RequestAction;
+
+		// Validate URL of the request
+		expect(argsReceivedInRequest[0]).toBe(action.endpoint);
+
+		// Validate Other bits of the request
+		expect(argsReceivedInRequest[1].headers.authorization).toBe("abcdef");
+		expect(JSON.parse(argsReceivedInRequest[1].body).phoneNumber).toBe("1234");
+		expect(JSON.parse(argsReceivedInRequest[1].body).number).toBe(1234);
 	});
 });

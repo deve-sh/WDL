@@ -10,7 +10,7 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 			heading: "Enter Your Phone Number",
 			blocks: [
 				{
-					type: 'input',
+					type: "input",
 					attributes: {
 						type: "tel",
 						label: "Enter your phone number",
@@ -56,6 +56,22 @@ const workflowTemplate: WorkflowDefinitionSchema = {
 				body: {
 					phoneNumber: "{{ steps.enterPhoneNumberStep.inputs.phoneNumber }}",
 				},
+				onSuccess: { targetStep: "verifyOTPStep" },
+				onError: { targetStep: "enterPhoneNumberStep" },
+			},
+		},
+
+		{
+			type: "request-or-resolver",
+			id: "sendingOTPStageWithStringifiedHeaderAndBody",
+			name: "Sending OTP to entered phone number",
+			heading: "Sending OTP to your entered phone number",
+			action: {
+				type: "request",
+				endpoint: "http://localhost:5000/sendOTPToPhoneNumber",
+				method: "post",
+				headers: '{ "authorization": "{{ env.otpApiKey }}" }',
+				body: '{ "phoneNumber": "{{ steps.enterPhoneNumberStep.inputs.phoneNumber }}", "number": {{ steps.enterPhoneNumberStep.inputs.phoneNumber }} }',
 				onSuccess: { targetStep: "verifyOTPStep" },
 				onError: { targetStep: "enterPhoneNumberStep" },
 			},
