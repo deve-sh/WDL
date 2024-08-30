@@ -98,7 +98,6 @@ export const workflowStore = createStore(
 				({
 					nodes: state.nodes,
 					edges: state.edges,
-					isEditable: state.isEditable,
 				} as WorkflowBuilderState),
 		}
 	)
