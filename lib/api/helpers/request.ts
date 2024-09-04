@@ -44,7 +44,15 @@ export default async function request(
 			}
 		);
 		if (!response.ok) failed = true;
-		response = await response.json();
+		try {
+			response = await response.json();
+		} catch {
+			try {
+				response = await response.text();
+			} catch {
+				response = null;
+			}
+		}
 	} catch (error: Error | unknown) {
 		failed = true;
 		errorMessage = (error as Error).message;

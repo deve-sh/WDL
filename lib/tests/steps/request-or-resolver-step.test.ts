@@ -149,4 +149,75 @@ describe("Tests for request/resolver steps", () => {
 		expect(JSON.parse(argsReceivedInRequest[1].body).phoneNumber).toBe("1234");
 		expect(JSON.parse(argsReceivedInRequest[1].body).number).toBe(1234);
 	});
+
+	it("should handle text responses from endpoints as well", async () => {
+		global.window = {
+			// @ts-expect-error Filling in a window mock for the server environment without an additional library
+			fetch: async () => ({
+				ok: true,
+				text: async () => mockRequestResponse.message,
+			}),
+		};
+
+		const requestStepInWorkflowTemplate = workflowTemplate.steps.find(
+			(step) => step.id === "sendingOTPStageWithStringifiedHeaderAndBody"
+		) as RequestOrResolverWorkflowStep;
+
+		if (!requestStepInWorkflowTemplate) return;
+
+		const workflow = new Workflow(workflowTemplate, {
+			environmentContext: { otpApiKey: "abcdef" },
+		}).loadCurrentState({
+			currentStep: "sendingOTPStageWithStringifiedHeaderAndBody",
+			metadata: {
+				general: {},
+				enterPhoneNumberStep: { inputs: { phoneNumber: 1234 } },
+			},
+			executionSequence: [],
+		});
+
+		await workflow.processCurrentStep();
+
+		const newResponseMetadata = workflow.getStepMetadata(
+			"sendingOTPStageWithStringifiedHeaderAndBody"
+		);
+
+		expect(newResponseMetadata.response).toBe(mockRequestResponse.message);
+		expect(newResponseMetadata.errorMessage).toBe("");
+	});
+
+	it("should handle malformed/unsupported responses from endpoints as well", async () => {
+		global.window = {
+			// @ts-expect-error Filling in a window mock for the server environment without an additional library
+			fetch: async () => ({
+				ok: true
+			}),
+		};
+
+		const requestStepInWorkflowTemplate = workflowTemplate.steps.find(
+			(step) => step.id === "sendingOTPStageWithStringifiedHeaderAndBody"
+		) as RequestOrResolverWorkflowStep;
+
+		if (!requestStepInWorkflowTemplate) return;
+
+		const workflow = new Workflow(workflowTemplate, {
+			environmentContext: { otpApiKey: "abcdef" },
+		}).loadCurrentState({
+			currentStep: "sendingOTPStageWithStringifiedHeaderAndBody",
+			metadata: {
+				general: {},
+				enterPhoneNumberStep: { inputs: { phoneNumber: 1234 } },
+			},
+			executionSequence: [],
+		});
+
+		await workflow.processCurrentStep();
+
+		const newResponseMetadata = workflow.getStepMetadata(
+			"sendingOTPStageWithStringifiedHeaderAndBody"
+		);
+
+		expect(newResponseMetadata.response).toBeNull();
+		expect(newResponseMetadata.errorMessage).toBe("");
+	});
 });
